@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import * as yup from 'yup';
 
-// 1. Define the validation schema
 const schema = yup.object().shape({
   email: yup
     .string()
@@ -24,7 +23,6 @@ const schema = yup.object().shape({
 });
 
 const LoginScreen = () => {
-  // 2. Set up the form hooks
   const {
     control,
     handleSubmit,
@@ -94,7 +92,6 @@ const LoginScreen = () => {
   );
 };
 
-// 4. Add some basic styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

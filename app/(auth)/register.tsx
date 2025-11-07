@@ -11,20 +11,20 @@ import {
 } from 'react-native';
 import * as yup from 'yup';
 
-// 1. Define the validation schema
 const schema = yup.object().shape({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
   email: yup
     .string()
     .email('Must be a valid email')
     .required('Email is required'),
   password: yup
     .string()
-    .min(6, 'Password must be at least 6 characters')
+    .min(8, 'Password must be at least 8 characters')
     .required('Password is required'),
 });
 
-const LoginScreen = () => {
-  // 2. Set up the form hooks
+const RegisterScreen = () => {
   const {
     control,
     handleSubmit,
@@ -32,6 +32,8 @@ const LoginScreen = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
     },
@@ -39,7 +41,7 @@ const LoginScreen = () => {
 
   // 3. Create a submit handler
   const onSubmit = (data) => {
-    console.log('Login Data:', data);
+    console.log('Register Data:', data);
     // TODO:
     // 1. Call the dummyjson API
     // 2. On success, save token
@@ -49,6 +51,40 @@ const LoginScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.form}>
+        <Text style={styles.label}>First Name</Text>
+        <Controller
+          control={control}
+          name="firstName"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.firstName && (
+          <Text style={styles.error}>{errors.firstName.message}</Text>
+        )}
+
+        <Text style={styles.label}>Last Name</Text>
+        <Controller
+          control={control}
+          name="lastName"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.lastName && (
+          <Text style={styles.error}>{errors.lastName.message}</Text>
+        )}
+
         <Text style={styles.label}>Email</Text>
         <Controller
           control={control}
@@ -86,15 +122,14 @@ const LoginScreen = () => {
           <Text style={styles.error}>{errors.password.message}</Text>
         )}
 
-        <Button title="Login" onPress={handleSubmit(onSubmit)} />
+        <Button title="Register" onPress={handleSubmit(onSubmit)} />
 
-        {/* TODO: Add a "Go to Register" button */}
+        {/* TODO: Add a "Go to Login" button */}
       </View>
     </SafeAreaView>
   );
 };
 
-// 4. Add some basic styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -125,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;
