@@ -51,6 +51,7 @@ const persistConfig = {
   storage: SecureStorage, // The storage engine
   whitelist: ['auth'], // ONLY persist the 'auth' slice
   blacklist: [apiSlice.reducerPath], // <-- 2. Add API to blacklist
+  keyPrefix: 'secure_', // optional prefix to distinguish in SecureStore
 };
 
 // 2. Combine all our reducers
