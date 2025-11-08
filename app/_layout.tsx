@@ -8,6 +8,10 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from '../store/store';
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -42,7 +46,14 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  // 4. Wrap your entire app
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RootLayoutNav />
+      </PersistGate>
+    </Provider>
+  );
 }
 
 function RootLayoutNav() {
@@ -51,9 +62,10 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} /> 
+      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+    </Stack>
     </ThemeProvider>
   );
 }
