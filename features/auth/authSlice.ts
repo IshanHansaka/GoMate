@@ -1,16 +1,12 @@
+import { AuthState, AuthTokens, AuthUser } from '@/types/auth';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// Define what our auth state looks like
-interface AuthState {
-  user: { name: string; email: string } | null;
-  token: string | null;
-  expiresInMins?: number;
-}
-
-// Define the initial (logged out) state
 const initialState: AuthState = {
   user: null,
-  token: null,
+  tokens: {
+    accessToken: '',
+    refreshToken: '',
+  },
   expiresInMins: undefined,
 };
 
@@ -23,33 +19,39 @@ const authSlice = createSlice({
     setCredentials: (
       state,
       action: PayloadAction<{
-        user: { name: string; email: string };
-        token: string;
+        user: AuthUser | null;
+        tokens: AuthTokens;
         expiresInMins?: number;
       }>
     ) => {
+      if (
+        !action.payload.tokens.accessToken ||
+        !action.payload.tokens.refreshToken
+      ) {
+        throw new Error('Missing tokens in setCredentials');
+      }
+
       state.user = action.payload.user;
-      state.token = action.payload.token;
+      state.tokens = action.payload.tokens;
       state.expiresInMins = action.payload.expiresInMins;
     },
 
-    // This action will be "dispatched" when the user logs out
     logout: (state) => {
       state.user = null;
-      state.token = null;
+      state.tokens = {
+        accessToken: '',
+        refreshToken: '',
+      };
       state.expiresInMins = undefined;
     },
   },
 });
 
-// Export the actions so we can use them in our components
 export const { setCredentials, logout } = authSlice.actions;
 
-// Export the reducer to add to our store
 export default authSlice.reducer;
 
-// (Optional but helpful) "Selectors" to easily get data from the store
 export const selectCurrentUser = (state: { auth: AuthState }) =>
   state.auth.user;
 export const selectIsAuthenticated = (state: { auth: AuthState }) =>
-  !!state.auth.token;
+  !!state.auth.tokens.accessToken;

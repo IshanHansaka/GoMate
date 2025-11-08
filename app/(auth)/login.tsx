@@ -6,10 +6,10 @@ import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch } from 'react-redux'; // <-- 2. Import useDispatch
+import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { useLoginMutation } from '../../api/apiSlice';
-import { setCredentials } from '../../features/auth/authSlice'; // <-- 3. Import our action
+import { setCredentials } from '../../features/auth/authSlice';
 
 const schema = yup.object().shape({
   username: yup.string().required('Username is required'),
@@ -41,15 +41,23 @@ const LoginScreen = () => {
   // 6. Update the submit handler
   const onSubmit = async (data: LoginFormData) => {
     try {
-      // .unwrap() will throw an error if the request fails
       const userData = await login(data).unwrap();
 
-      // On success, dispatch the credentials to the Redux store [cite: 14]
+      // Update Redux
       dispatch(
         setCredentials({
-          user: { name: userData.username, email: userData.email },
-          token: userData.accessToken,
-          expiresInMins: data.expiresInMins || 60, // optional session duration
+          user: {
+            id: userData.id,
+            username: userData.username,
+            email: userData.email,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+          },
+          tokens: {
+            accessToken: userData.accessToken,
+            refreshToken: userData.refreshToken,
+          },
+          expiresInMins: data.expiresInMins || 60,
         })
       );
 
