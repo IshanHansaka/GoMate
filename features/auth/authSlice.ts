@@ -4,12 +4,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface AuthState {
   user: { name: string; email: string } | null;
   token: string | null;
+  expiresInMins?: number;
 }
 
 // Define the initial (logged out) state
 const initialState: AuthState = {
   user: null,
   token: null,
+  expiresInMins: undefined,
 };
 
 const authSlice = createSlice({
@@ -23,16 +25,19 @@ const authSlice = createSlice({
       action: PayloadAction<{
         user: { name: string; email: string };
         token: string;
+        expiresInMins?: number;
       }>
     ) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
+      state.expiresInMins = action.payload.expiresInMins;
     },
 
     // This action will be "dispatched" when the user logs out
     logout: (state) => {
       state.user = null;
       state.token = null;
+      state.expiresInMins = undefined;
     },
   },
 });

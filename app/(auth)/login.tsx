@@ -47,8 +47,9 @@ const LoginScreen = () => {
       // On success, dispatch the credentials to the Redux store [cite: 14]
       dispatch(
         setCredentials({
-          user: { name: userData.username, email: userData.email }, // [cite: 13]
-          token: userData.token,
+          user: { name: userData.username, email: userData.email },
+          token: userData.accessToken,
+          expiresInMins: data.expiresInMins || 60, // optional session duration
         })
       );
 

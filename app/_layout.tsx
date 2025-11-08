@@ -5,87 +5,60 @@ import {
   ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter, useSegments } from 'expo-router'; // <-- 1. Import router hooks
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/components/useColorScheme';
-
-import { Provider, useSelector } from 'react-redux'; // <-- 2. Import useSelector
+import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { selectIsAuthenticated } from '../features/auth/authSlice'; // <-- 3. Import selector
+
+import LoadingScreen from '@/components/LoadingScreen'; // optional spinner component
+import { useColorScheme } from '@/components/useColorScheme';
+import { selectIsAuthenticated } from '../features/auth/authSlice';
 import { persistor, store } from '../store/store';
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Prevent splash screen auto-hide
 SplashScreen.preventAutoHideAsync();
 
+// Main entry point
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
+  const [fontsLoaded, fontsError] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
+  // Handle font loading errors
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+    if (fontsError) throw fontsError;
+  }, [fontsError]);
 
+  // Hide splash screen when fonts loaded
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
 
-  if (!loaded) {
-    return null;
-  }
+  if (!fontsLoaded) return <LoadingScreen />; // show a loader instead of blank
 
-  // Wrap the main app in the Redux Provider
   return (
     <Provider store={store}>
-      {/* PersistGate waits for Redux state to be loaded from storage */}
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={<LoadingScreen />} persistor={persistor}>
         <RootLayoutNav />
       </PersistGate>
     </Provider>
   );
 }
 
-// This component runs *inside* the Provider, so it can access Redux
+// Component inside Redux Provider
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-
-  // 4. Get auth state from Redux
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const segments = useSegments(); // Gets the current route path
+  const segments = useSegments();
   const router = useRouter();
 
-  // 5. Add effect to handle redirection
-  useEffect(() => {
-    const inAuthGroup = segments[0] === '(auth)';
+  // Redirect based on auth state
+  useAuthRedirect(isAuthenticated, segments, router);
 
-    if (isAuthenticated && !inAuthGroup) {
-      // User is logged in but not in the main app, send them to home
-      router.replace('/(tabs)/home');
-    } else if (!isAuthenticated && !inAuthGroup) {
-      // User is logged out and not in the auth flow, send them to login
-      router.replace('/(auth)/login');
-    }
-  }, [isAuthenticated, segments, router]); // Re-run when auth state changes
-
-  // 6. Render the correct layout
-  //    The useEffect above will handle redirection
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
@@ -95,4 +68,20 @@ function RootLayoutNav() {
       </Stack>
     </ThemeProvider>
   );
+}
+
+function useAuthRedirect(
+  isAuthenticated: boolean,
+  segments: string[],
+  router: any
+) {
+  useEffect(() => {
+    const currentGroup = segments[0];
+
+    if (isAuthenticated && currentGroup !== '(tabs)') {
+      router.replace('/(tabs)/home');
+    } else if (!isAuthenticated && currentGroup !== '(auth)') {
+      router.replace('/(auth)/login');
+    }
+  }, [isAuthenticated, segments, router]);
 }
