@@ -1,3 +1,5 @@
+import { ApiError } from '@/types/api';
+import { LoginFormData } from '@/types/auth';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -13,20 +15,14 @@ import {
 } from 'react-native';
 import { useDispatch } from 'react-redux'; // <-- 2. Import useDispatch
 import * as yup from 'yup';
-import { useLoginMutation } from '../../api/apiSlice'; // <-- 4. Import the API hook
+import { useLoginMutation } from '../../api/apiSlice';
 import { setCredentials } from '../../features/auth/authSlice'; // <-- 3. Import our action
 
-// ... (schema remains the same)
 const schema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Must be a valid email')
-    .required('Email is required'),
-  // Note: dummyjson login uses 'kminchelle' and '0lelplR'
-  // Or 'atuny0' and '9uQFF1Lh'
+  username: yup.string().required('Username is required'),
   password: yup
     .string()
-    .min(6, 'Password must be at least 6 characters')
+    .min(8, 'Password must be at least 8 characters')
     .required('Password is required'),
 });
 
@@ -35,12 +31,12 @@ const LoginScreen = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<LoginFormData>({
     resolver: yupResolver(schema),
-    // For easy testing with dummyjson [cite: 41]
+    // For easy testing with dummyjson
     defaultValues: {
-      email: 'emily.johnson@x.dummyjson.com', // You can use this for testing
-      password: 'emilyspass', // You can use this for testing
+      username: 'emilys',
+      password: 'emilyspass',
     },
   });
 
@@ -50,7 +46,7 @@ const LoginScreen = () => {
   const [login, { isLoading }] = useLoginMutation(); // Hook gives us a trigger and loading state
 
   // 6. Update the submit handler
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: LoginFormData) => {
     try {
       // .unwrap() will throw an error if the request fails
       const userData = await login(data).unwrap();
@@ -63,35 +59,34 @@ const LoginScreen = () => {
         })
       );
 
-      // Navigate to the home screen on success [cite: 12]
       router.replace('/(tabs)/home');
     } catch (err) {
-      // If .unwrap() throws, we catch it here
-      console.error('Login Failed:', err);
-      Alert.alert('Login Failed', err.data?.message || 'Invalid credentials');
+      const error = err as ApiError;
+      console.error('Login Failed:', error);
+      Alert.alert('Login Failed', error.data?.message || 'Invalid credentials');
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.form}>
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>Username</Text>
         <Controller
           control={control}
-          name="email"
+          name="username"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               style={styles.input}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              keyboardType="email-address"
+              keyboardType="default"
               autoCapitalize="none"
             />
           )}
         />
-        {errors.email && (
-          <Text style={styles.error}>{errors.email.message}</Text>
+        {errors.username && (
+          <Text style={styles.error}>{errors.username.message}</Text>
         )}
 
         <Text style={styles.label}>Password</Text>
