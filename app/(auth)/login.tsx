@@ -4,15 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  Alert,
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux'; // <-- 2. Import useDispatch
 import * as yup from 'yup';
 import { useLoginMutation } from '../../api/apiSlice';
