@@ -1,18 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
-  // The "reducerPath" is a unique key for this slice
   reducerPath: 'api',
 
-  // We'll use the dummyjson base URL [cite: 41]
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://dummyjson.com' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://dummyjson.com',
+    credentials: 'include',
+    prepareHeaders: (headers) => {
+      headers.set('Content-Type', 'application/json');
+      return headers;
+    },
+  }),
 
-  // "endpoints" are the specific API calls we can make
   endpoints: (builder) => ({
-    // This is a "mutation" because it changes data (logs the user in)
     login: builder.mutation({
       query: (credentials) => ({
-        url: '/auth/login', // The endpoint path
+        url: '/auth/login',
         method: 'POST',
         body: credentials,
       }),
@@ -22,5 +25,4 @@ export const apiSlice = createApi({
   }),
 });
 
-// Export the auto-generated hook for the "login" mutation
 export const { useLoginMutation } = apiSlice;
