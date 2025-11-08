@@ -39,8 +39,8 @@ const LoginScreen = () => {
     resolver: yupResolver(schema),
     // For easy testing with dummyjson [cite: 41]
     defaultValues: {
-      email: 'kminchelle', // You can use this for testing
-      password: '0lelplR', // You can use this for testing
+      email: 'emily.johnson@x.dummyjson.com', // You can use this for testing
+      password: 'emilyspass', // You can use this for testing
     },
   });
 
