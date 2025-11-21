@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   useGetStationInfoQuery,
   useGetStationParkingQuery,
@@ -19,17 +20,16 @@ import {
 import { getLineName } from '../../../constants/LineNames';
 import { getStationName } from '../../../constants/StationNames';
 import {
+  addFavourite,
+  removeFavourite,
+} from '../../../features/favourites/favouritesSlice';
+import { RootState } from '../../../store/store';
+import {
   NextTrainInfo,
   StationInfo,
   StationParking,
   StationTime,
 } from '../../../types/wmata';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  addFavourite,
-  removeFavourite,
-} from '../../../features/favourites/favouritesSlice';
-import { RootState } from '../../../store/store';
 
 const DAYS = [
   'Monday',
