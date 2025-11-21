@@ -3,6 +3,7 @@ import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -59,29 +60,34 @@ const StationScreen = () => {
     return dayMap[dayIndex];
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const {
     data: infoData,
     isLoading: isInfoLoading,
     error: infoError,
+    refetch: refetchInfo,
   } = useGetStationInfoQuery(code);
 
   const {
     data: parkingData,
     isLoading: isParkingLoading,
     error: parkingError,
+    refetch: refetchParking,
   } = useGetStationParkingQuery(code);
 
   const {
     data: timesData,
     isLoading: isTimesLoading,
     error: timesError,
+    refetch: refetchTimes,
   } = useGetStationTimesQuery(code);
 
   const {
     data: predictionsData,
     isLoading: isPredictionsLoading,
     error: predictionsError,
+    refetch: refetchPredictions,
   } = useGetStationPredictionsQuery(code);
   // {
   //   pollingInterval: 30000, // Refresh every 30 seconds
@@ -103,6 +109,15 @@ const StationScreen = () => {
     } else {
       dispatch(addFavourite(code));
     }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetchInfo();
+    refetchParking();
+    refetchTimes();
+    refetchPredictions();
+    setTimeout(() => setRefreshing(false), 1000);
   };
 
   if (isLoading) {
@@ -128,7 +143,13 @@ const StationScreen = () => {
   const predictions: NextTrainInfo[] = predictionsData?.Trains || [];
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       {/* Station Info */}
       {stationInfo && (
         <View style={styles.section}>
@@ -275,13 +296,11 @@ const StationScreen = () => {
                     {
                       backgroundColor: getLineColor(train.Line),
                       marginRight: 8,
-                      paddingHorizontal: 8,
-                      paddingVertical: 2,
+                      paddingHorizontal: 5,
+                      paddingVertical: 5,
                     },
                   ]}
-                >
-                  <Text style={styles.lineText}>{train.Line}</Text>
-                </View>
+                ></View>
                 <Text style={styles.trainDest}>
                   {train.DestinationName || train.Destination}
                 </Text>
