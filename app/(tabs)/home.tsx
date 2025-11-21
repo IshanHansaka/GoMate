@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useGetStationEntrancesQuery } from '../../api/wmataApiSlice';
+import { getStationName } from '../../constants/StationNames';
 import { StationEntrance } from '../../types/wmata';
 
 export default function HomeScreen() {
@@ -26,27 +27,40 @@ export default function HomeScreen() {
     radius: number;
   } | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [manualLat, setManualLat] = useState('38.8978'); // Default to Metro Center DC
+  const [manualLon, setManualLon] = useState('-77.0282'); // Default to Metro Center DC
+  const [isManualMode, setIsManualMode] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          setErrorMsg('Permission to access location was denied');
+          return;
+        }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+      } catch (error) {
+        setErrorMsg(
+          'Location request failed due to unsatisfied device settings.'
+        );
+      }
     })();
   }, []);
 
   const handleSearch = () => {
-    if (location && radius) {
+    if ((location || isManualMode) && radius) {
       setIsSearching(true);
       setSearchParams({
-        lat: location.coords.latitude,
-        lon: location.coords.longitude,
+        lat: isManualMode
+          ? parseFloat(manualLat)
+          : location?.coords.latitude || 0,
+        lon: isManualMode
+          ? parseFloat(manualLon)
+          : location?.coords.longitude || 0,
         radius: parseFloat(radius) * 1000, // Convert km to meters
       });
       setTimeout(() => setIsSearching(false), 1000); // Simulate a delay for better UX
@@ -82,15 +96,60 @@ export default function HomeScreen() {
         <Text style={styles.subErrorText}>
           Please enable location services to find nearby stations.
         </Text>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={() => {
+            setErrorMsg(null);
+            setLocation(null);
+            // Show loading spinner and message
+            setTimeout(() => {
+              (async () => {
+                try {
+                  let { status } =
+                    await Location.requestForegroundPermissionsAsync();
+                  if (status !== 'granted') {
+                    setErrorMsg('Permission to access location was denied');
+                    return;
+                  }
+
+                  let location = await Location.getCurrentPositionAsync({});
+                  setLocation(location);
+                } catch (error) {
+                  setErrorMsg(
+                    'Location request failed due to unsatisfied device settings. Please enable GPS.'
+                  );
+                }
+              })();
+            }, 500); // Simulate a short delay for better UX
+          }}
+        >
+          <Text style={styles.retryText}>Retry</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.retryButton, { marginTop: 10 }]}
+          onPress={() => {
+            setIsManualMode(true);
+            setErrorMsg(null);
+            setLocation(null);
+          }}
+        >
+          <Text style={styles.retryText}>Use Manual Location</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
-  if (!location) {
+  if (!location && !isManualMode) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#007BFF" />
         <Text style={styles.loadingText}>Getting your location...</Text>
+        <TouchableOpacity
+          style={[styles.retryButton, { marginTop: 20 }]}
+          onPress={() => setIsManualMode(true)}
+        >
+          <Text style={styles.retryText}>Use Manual Location</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -112,16 +171,47 @@ export default function HomeScreen() {
             <Text style={styles.searchButtonText}>Search</Text>
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          style={styles.manualModeButton}
+          onPress={() => setIsManualMode(!isManualMode)}
+        >
+          <Text style={styles.manualModeText}>
+            {isManualMode ? 'Use GPS Location' : 'Use Manual Location'}
+          </Text>
+        </TouchableOpacity>
+
+        {isManualMode && (
+          <View style={styles.manualInputContainer}>
+            <TextInput
+              style={[styles.input, { flex: 1 }]}
+              value={manualLat}
+              onChangeText={setManualLat}
+              keyboardType="numeric"
+              placeholder="Latitude"
+              placeholderTextColor="#999"
+            />
+            <TextInput
+              style={[styles.input, { flex: 1 }]}
+              value={manualLon}
+              onChangeText={setManualLon}
+              keyboardType="numeric"
+              placeholder="Longitude"
+              placeholderTextColor="#999"
+            />
+          </View>
+        )}
+        {isManualMode && (
+          <Text style={styles.manualHint}>
+            Default: Metro Center DC (38.8978, -77.0282)
+          </Text>
+        )}
       </View>
 
       {isLoading || isSearching ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#007BFF" />
-          <Text style={styles.loadingText}>
-            {isSearching
-              ? 'Searching for stations...'
-              : 'Finding nearby stations...'}
-          </Text>
+          <Text style={styles.loadingText}>Finding nearby stations...</Text>
         </View>
       ) : error ? (
         <View style={styles.center}>
@@ -144,7 +234,9 @@ export default function HomeScreen() {
                   <Ionicons name="train-outline" size={24} color="#007BFF" />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.stationName}>{item.Name}</Text>
+                  <Text style={styles.stationName}>
+                    {getStationName(item.StationCode1)}
+                  </Text>
                   <Text style={styles.distance}>{item.Description}</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color="#ccc" />
@@ -162,13 +254,6 @@ export default function HomeScreen() {
             </View>
           }
         />
-      )}
-
-      {isSearching && (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="#007BFF" />
-          <Text style={styles.loadingText}>Searching nearby stations...</Text>
-        </View>
       )}
     </View>
   );
@@ -254,7 +339,7 @@ const styles = StyleSheet.create({
   },
   subErrorText: {
     fontSize: 14,
-    color: '#666',
+    color: '#ff0000ff',
     textAlign: 'center',
   },
   retryButton: {
@@ -298,5 +383,25 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 16,
+  },
+  manualModeButton: {
+    marginTop: 12,
+    alignSelf: 'flex-start',
+  },
+  manualModeText: {
+    color: '#007BFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  manualInputContainer: {
+    flexDirection: 'row',
+    marginTop: 8,
+    gap: 10,
+  },
+  manualHint: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+    fontStyle: 'italic',
   },
 });
