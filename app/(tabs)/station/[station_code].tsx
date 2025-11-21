@@ -135,12 +135,20 @@ const StationScreen = () => {
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
+              alignItems: 'flex-start',
             }}
           >
-            <Text style={styles.title}>{stationInfo.Name}</Text>
-            <TouchableOpacity onPress={toggleFavourite}>
+            <Text
+              style={[styles.title, { flex: 1, flexShrink: 1 }]}
+              numberOfLines={3}
+            >
+              {stationInfo.Name}
+            </Text>
+
+            <TouchableOpacity
+              onPress={toggleFavourite}
+              style={{ marginLeft: 12 }}
+            >
               <Ionicons
                 name={isFavourite ? 'heart' : 'heart-outline'}
                 size={28}
