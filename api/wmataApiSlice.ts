@@ -52,6 +52,18 @@ export const wmataApiSlice = createApi({
     getLines: builder.query({
       query: () => '/Rail.svc/json/jLines',
     }),
+    getStationToStationInfo: builder.query({
+      query: ({ fromStation, toStation }) => {
+        let queryString = '/Rail.svc/json/jSrcStationToDstStationInfo';
+        const params = [];
+        if (fromStation) params.push(`FromStationCode=${fromStation}`);
+        if (toStation) params.push(`ToStationCode=${toStation}`);
+        if (params.length > 0) {
+          queryString += `?${params.join('&')}`;
+        }
+        return queryString;
+      },
+    }),
   }),
 });
 
@@ -64,4 +76,5 @@ export const {
   useGetRailIncidentsQuery,
   useGetStationEntrancesQuery,
   useGetLinesQuery,
+  useGetStationToStationInfoQuery,
 } = wmataApiSlice;

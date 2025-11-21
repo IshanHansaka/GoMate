@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
@@ -44,6 +44,7 @@ const DAYS = [
 
 const StationScreen = () => {
   const { station_code } = useLocalSearchParams();
+  const router = useRouter();
   const code = station_code as string;
 
   const [selectedDay, setSelectedDay] = useState<(typeof DAYS)[number]>(() => {
@@ -202,18 +203,29 @@ const StationScreen = () => {
               ))}
           </View>
 
-          {/* Map View */}
-          <View style={styles.mapContainer}>
-            <WebView
-              style={styles.map}
-              source={{
-                html: `<iframe width="100%" height="100%" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${stationInfo.Lat},${stationInfo.Lon}&z=15&output=embed"></iframe>`,
-              }}
-              scrollEnabled={false}
-            />
-          </View>
+          <TouchableOpacity
+            style={styles.planTripButton}
+            onPress={() => router.push(`/journey?fromStation=${code}`)}
+          >
+            <Ionicons name="map-outline" size={20} color="white" />
+            <Text style={styles.planTripButtonText}>Plan Trip from Here</Text>
+          </TouchableOpacity>
         </View>
       )}
+
+      {/* Enhanced Map View */}
+      <View style={styles.section}>
+        <Text style={styles.mapTitle}>Station Location</Text>
+        <View style={styles.mapContainer}>
+          <WebView
+            style={styles.map}
+            source={{
+              html: `<iframe width="100%" height="100%" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${stationInfo.Lat},${stationInfo.Lon}&z=15&output=embed"></iframe>`,
+            }}
+            scrollEnabled={false}
+          />
+        </View>
+      </View>
 
       {/* Parking Info */}
       <View style={styles.section}>
@@ -476,16 +488,43 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: 'bold', color: '#333', marginBottom: 4 },
   subtitle: { fontSize: 14, color: '#666', marginBottom: 12 },
 
-  linesContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  linesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 12,
+    gap: 8,
+  },
+  planTripButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#007BFF',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginTop: 16,
+    gap: 8,
+  },
+  planTripButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   lineBadge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 16 },
   lineText: { color: 'white', fontWeight: 'bold', fontSize: 12 },
 
+  mapTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    paddingBottom: 8,
+  },
   mapContainer: {
     height: 200,
-    marginTop: 16,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#eee',
+    position: 'relative',
   },
   map: { flex: 1 },
 

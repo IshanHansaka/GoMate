@@ -127,3 +127,21 @@ export interface Line {
 export interface LinesResponse {
   Lines: Line[];
 }
+
+export interface RailFare {
+  OffPeakTime: number;
+  PeakTime: number;
+  SeniorDisabled: number;
+}
+
+export interface StationToStationInfo {
+  CompositeMiles: number;
+  DestinationStation: string;
+  RailFare: RailFare;
+  RailTime: number;
+  SourceStation: string;
+}
+
+export interface StationToStationInfosResponse {
+  StationToStationInfos: StationToStationInfo[];
+}
