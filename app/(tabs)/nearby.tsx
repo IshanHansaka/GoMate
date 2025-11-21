@@ -20,7 +20,7 @@ export default function NearbyScreen() {
     null
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [radius, setRadius] = useState('10');
+  const [radius, setRadius] = useState('1');
   const [searchParams, setSearchParams] = useState<{
     lat: number;
     lon: number;
