@@ -44,6 +44,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="incidents"
+        options={{
+          title: 'Incidents',
+          tabBarIcon: ({ color }) => (
+            <Feather name="alert-triangle" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',

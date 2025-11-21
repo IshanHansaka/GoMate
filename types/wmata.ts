@@ -83,3 +83,20 @@ export interface NextTrainInfo {
 export interface StationPredictionsResponse {
   Trains: NextTrainInfo[];
 }
+
+export interface RailIncident {
+  DateUpdated: string;
+  DelaySeverity: string | null;
+  Description: string;
+  EmergencyText: string | null;
+  EndLocationFullName: string | null;
+  IncidentID: string;
+  IncidentType: string;
+  LinesAffected: string;
+  PassengerDelay: number;
+  StartLocationFullName: string | null;
+}
+
+export interface RailIncidentsResponse {
+  Incidents: RailIncident[];
+}
