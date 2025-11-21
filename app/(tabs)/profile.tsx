@@ -14,6 +14,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { apiSlice, useGetCurrentUserQuery } from '../../api/apiSlice';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
+import {
+  BORDER_RADIUS,
+  COLORS,
+  SHADOWS,
+  SPACING,
+  TYPOGRAPHY,
+} from '../../constants/Theme';
 import { logout, selectCurrentUser } from '../../features/auth/authSlice';
 import { RootState } from '../../store/store';
 import { StationInfo } from '../../types/wmata';
@@ -90,18 +97,22 @@ const ProfileScreen = () => {
 
       <View style={styles.infoSection}>
         <View style={styles.infoRow}>
-          <Ionicons name="mail-outline" size={20} color="#666" />
+          <Ionicons name="mail-outline" size={20} color={COLORS.mediumGray} />
           <Text style={styles.infoText}>{user?.email}</Text>
         </View>
         {user?.phone && (
           <View style={styles.infoRow}>
-            <Ionicons name="call-outline" size={20} color="#666" />
+            <Ionicons name="call-outline" size={20} color={COLORS.mediumGray} />
             <Text style={styles.infoText}>{user.phone}</Text>
           </View>
         )}
         {user?.address && (
           <View style={styles.infoRow}>
-            <Ionicons name="location-outline" size={20} color="#666" />
+            <Ionicons
+              name="location-outline"
+              size={20}
+              color={COLORS.mediumGray}
+            />
             <View>
               <Text style={styles.infoText}>{user.address.address}</Text>
               <Text style={styles.infoText}>
@@ -148,7 +159,7 @@ const ProfileScreen = () => {
             ))}
         </View>
       </View>
-      <Ionicons name="chevron-forward" size={20} color="#ccc" />
+      <Ionicons name="chevron-forward" size={20} color={COLORS.lightGray} />
     </TouchableOpacity>
   );
 
@@ -163,7 +174,7 @@ const ProfileScreen = () => {
           isLoading ? (
             <ActivityIndicator
               size="large"
-              color="#007BFF"
+              color={COLORS.primary}
               style={{ marginTop: 20 }}
             />
           ) : (
@@ -179,135 +190,124 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: COLORS.background,
   },
   listContent: {
-    paddingBottom: 20,
+    paddingBottom: SPACING.xl,
   },
   header: {
-    padding: 20,
-    backgroundColor: 'white',
-    marginBottom: 10,
+    padding: SPACING.xl,
+    backgroundColor: COLORS.white,
+    marginBottom: SPACING.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: COLORS.lightGray,
   },
   profileHeader: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: SPACING.xl,
   },
   avatarContainer: {
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
+    marginBottom: SPACING.md,
+    ...SHADOWS.medium,
   },
   avatarImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: COLORS.lightGray,
   },
   avatarPlaceholder: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#007BFF',
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarText: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
+    color: COLORS.white,
+    ...TYPOGRAPHY.h2,
   },
   name: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    ...TYPOGRAPHY.h3,
+    color: COLORS.text,
   },
   email: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 2,
+    ...TYPOGRAPHY.caption,
+    color: COLORS.mediumGray,
+    marginTop: SPACING.xs,
   },
   username: {
-    fontSize: 14,
-    color: '#888',
-    marginTop: 2,
+    ...TYPOGRAPHY.caption,
+    color: COLORS.mediumGray,
+    marginTop: SPACING.xs,
   },
   infoSection: {
-    marginBottom: 24,
-    backgroundColor: '#f8f9fa',
-    padding: 16,
-    borderRadius: 12,
+    marginBottom: SPACING.xxl,
+    backgroundColor: COLORS.lightGray,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
   },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 12,
-    gap: 12,
+    marginBottom: SPACING.md,
+    gap: SPACING.md,
   },
   infoText: {
-    fontSize: 16,
-    color: '#444',
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
     flex: 1,
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FF3B30',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 20,
+    backgroundColor: COLORS.error,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.xl,
   },
   logoutText: {
-    color: 'white',
+    color: COLORS.white,
     fontWeight: '600',
-    marginLeft: 8,
+    marginLeft: SPACING.sm,
   },
   sectionHeader: {
-    marginTop: 10,
+    marginTop: SPACING.md,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    ...TYPOGRAPHY.h4,
+    color: COLORS.text,
   },
   card: {
-    backgroundColor: 'white',
-    padding: 16,
-    marginHorizontal: 20,
-    marginBottom: 12,
-    borderRadius: 12,
+    backgroundColor: COLORS.white,
+    padding: SPACING.lg,
+    marginHorizontal: SPACING.xl,
+    marginBottom: SPACING.md,
+    borderRadius: BORDER_RADIUS.lg,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    ...SHADOWS.light,
   },
   cardContent: {
     flex: 1,
   },
   stationName: {
-    fontSize: 16,
+    ...TYPOGRAPHY.body,
     fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
+    color: COLORS.text,
+    marginBottom: SPACING.xs,
   },
   stationAddress: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 8,
+    ...TYPOGRAPHY.small,
+    color: COLORS.mediumGray,
+    marginBottom: SPACING.sm,
   },
   linesContainer: {
     flexDirection: 'row',
-    gap: 6,
+    gap: SPACING.xs,
   },
   lineDot: {
     width: 12,
@@ -316,8 +316,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    color: '#666',
-    marginTop: 20,
+    color: COLORS.mediumGray,
+    marginTop: SPACING.xl,
     fontStyle: 'italic',
   },
 });

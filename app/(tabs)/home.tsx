@@ -13,6 +13,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
+import {
+  BORDER_RADIUS,
+  COLORS,
+  SHADOWS,
+  SPACING,
+  TYPOGRAPHY,
+} from '../../constants/Theme';
 import { selectCurrentUser } from '../../features/auth/authSlice';
 import { StationInfo } from '../../types/wmata';
 
@@ -47,28 +54,28 @@ const HomeScreen = () => {
       title: 'Journey',
       icon: 'map',
       route: '/(tabs)/journey',
-      color: '#007BFF',
+      color: COLORS.primary,
     },
     {
       id: 'lines',
       title: 'Lines',
       icon: 'git-network',
       route: '/(tabs)/lines',
-      color: '#28A745',
+      color: COLORS.secondary,
     },
     {
       id: 'nearby',
       title: 'Nearby',
       icon: 'location',
       route: '/(tabs)/nearby',
-      color: '#FFC107',
+      color: COLORS.accent,
     },
     {
       id: 'stations',
       title: 'Stations',
       icon: 'train',
       route: '/(tabs)/stations',
-      color: '#6F42C1',
+      color: COLORS.primary,
     },
   ];
 
@@ -84,7 +91,7 @@ const HomeScreen = () => {
     >
       <View style={styles.stationHeader}>
         <View style={styles.iconContainer}>
-          <Ionicons name="train-outline" size={24} color="#333" />
+          <Ionicons name="train-outline" size={24} color={COLORS.text} />
         </View>
         <View style={styles.linesRow}>
           {[item.LineCode1, item.LineCode2, item.LineCode3, item.LineCode4]
@@ -127,7 +134,7 @@ const HomeScreen = () => {
           style={styles.searchBar}
           onPress={() => router.push('/(tabs)/stations')}
         >
-          <Ionicons name="search" size={20} color="#666" />
+          <Ionicons name="search" size={20} color={COLORS.mediumGray} />
           <Text style={styles.searchText}>Search for a station...</Text>
         </TouchableOpacity>
 
@@ -169,7 +176,7 @@ const HomeScreen = () => {
           {isLoading ? (
             <ActivityIndicator
               size="large"
-              color="#007BFF"
+              color={COLORS.primary}
               style={{ marginVertical: 20 }}
             />
           ) : (
@@ -191,128 +198,115 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: COLORS.background,
   },
   scrollContent: {
-    padding: 20,
+    padding: SPACING.xl,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: SPACING.xl,
   },
   greeting: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    ...TYPOGRAPHY.h2,
+    color: COLORS.text,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
+    ...TYPOGRAPHY.body,
+    color: COLORS.mediumGray,
+    marginTop: SPACING.xs,
   },
   profileButton: {
-    padding: 4,
+    padding: SPACING.xs,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 24,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    backgroundColor: COLORS.white,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.lg,
+    marginBottom: SPACING.xxl,
+    ...SHADOWS.light,
   },
   searchText: {
-    marginLeft: 10,
-    color: '#999',
-    fontSize: 16,
+    marginLeft: SPACING.sm,
+    color: COLORS.mediumGray,
+    ...TYPOGRAPHY.body,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
+    ...TYPOGRAPHY.h4,
+    color: COLORS.text,
+    marginBottom: SPACING.md,
   },
   shortcutsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    marginBottom: SPACING.xxl,
   },
   shortcutCard: {
     width: '48%',
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 16,
+    backgroundColor: COLORS.white,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.xl,
+    marginBottom: SPACING.lg,
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    ...SHADOWS.medium,
   },
   iconCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   shortcutTitle: {
-    fontSize: 16,
+    ...TYPOGRAPHY.body,
     fontWeight: '600',
-    color: '#333',
+    color: COLORS.text,
   },
   stationsSection: {
-    marginBottom: 20,
+    marginBottom: SPACING.xl,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   seeAllText: {
-    color: '#007BFF',
-    fontSize: 14,
+    color: COLORS.primary,
+    ...TYPOGRAPHY.caption,
     fontWeight: '600',
   },
   stationsList: {
-    paddingRight: 20,
+    paddingRight: SPACING.xl,
   },
   stationCard: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
     width: 160,
-    padding: 16,
-    borderRadius: 16,
-    marginRight: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.xl,
+    marginRight: SPACING.lg,
+    ...SHADOWS.medium,
   },
   stationHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   iconContainer: {
-    backgroundColor: '#f0f0f0',
-    padding: 8,
-    borderRadius: 8,
+    backgroundColor: COLORS.lightGray,
+    padding: SPACING.sm,
+    borderRadius: BORDER_RADIUS.md,
   },
   linesRow: {
     flexDirection: 'row',
-    gap: 4,
+    gap: SPACING.xs,
     flexWrap: 'wrap',
     maxWidth: 60,
     justifyContent: 'flex-end',
@@ -323,14 +317,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   stationName: {
-    fontSize: 16,
+    ...TYPOGRAPHY.body,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
+    color: COLORS.text,
+    marginBottom: SPACING.xs,
   },
   stationAddress: {
-    fontSize: 12,
-    color: '#666',
+    ...TYPOGRAPHY.small,
+    color: COLORS.mediumGray,
   },
 });
 

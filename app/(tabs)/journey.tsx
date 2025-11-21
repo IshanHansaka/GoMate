@@ -13,6 +13,13 @@ import {
 } from 'react-native';
 import { useGetStationToStationInfoQuery } from '../../api/wmataApiSlice';
 import { STATION_NAMES } from '../../constants/StationNames';
+import {
+  BORDER_RADIUS,
+  COLORS,
+  SHADOWS,
+  SPACING,
+  TYPOGRAPHY,
+} from '../../constants/Theme';
 import { StationToStationInfo } from '../../types/wmata';
 
 export default function JourneyScreen() {
@@ -82,7 +89,7 @@ export default function JourneyScreen() {
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Select Station</Text>
             <TouchableOpacity onPress={() => setVisible(false)}>
-              <Ionicons name="close" size={24} color="#333" />
+              <Ionicons name="close" size={24} color={COLORS.text} />
             </TouchableOpacity>
           </View>
           <FlatList
@@ -113,7 +120,7 @@ export default function JourneyScreen() {
           onPress={() => router.back()}
           style={styles.backButton}
         >
-          <Ionicons name="arrow-back" size={24} color="#333" />
+          <Ionicons name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Trip Planner</Text>
       </View>
@@ -127,7 +134,7 @@ export default function JourneyScreen() {
           <Text style={styles.selectorText}>
             {fromStation ? STATION_NAMES[fromStation] : 'Select Origin'}
           </Text>
-          <Ionicons name="chevron-down" size={20} color="#666" />
+          <Ionicons name="chevron-down" size={20} color={COLORS.mediumGray} />
         </TouchableOpacity>
 
         <Text style={styles.label}>To:</Text>
@@ -138,7 +145,7 @@ export default function JourneyScreen() {
           <Text style={styles.selectorText}>
             {toStation ? STATION_NAMES[toStation] : 'Select Destination'}
           </Text>
-          <Ionicons name="chevron-down" size={20} color="#666" />
+          <Ionicons name="chevron-down" size={20} color={COLORS.mediumGray} />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -159,7 +166,7 @@ export default function JourneyScreen() {
 
       {isLoading && (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#007BFF" />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.loadingText}>Calculating trip...</Text>
         </View>
       )}
@@ -175,7 +182,7 @@ export default function JourneyScreen() {
           <Text style={styles.resultTitle}>Trip Details</Text>
 
           <View style={styles.resultRow}>
-            <Ionicons name="time-outline" size={24} color="#007BFF" />
+            <Ionicons name="time-outline" size={24} color={COLORS.primary} />
             <View style={styles.resultTextContainer}>
               <Text style={styles.resultLabel}>Estimated Time</Text>
               <Text style={styles.resultValue}>{journeyInfo.RailTime} min</Text>
@@ -183,7 +190,7 @@ export default function JourneyScreen() {
           </View>
 
           <View style={styles.resultRow}>
-            <Ionicons name="map-outline" size={24} color="#007BFF" />
+            <Ionicons name="map-outline" size={24} color={COLORS.primary} />
             <View style={styles.resultTextContainer}>
               <Text style={styles.resultLabel}>Distance</Text>
               <Text style={styles.resultValue}>
@@ -248,172 +255,158 @@ export default function JourneyScreen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 20,
+    backgroundColor: COLORS.background,
+    padding: SPACING.xl,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 20,
+    marginBottom: SPACING.xl,
+    marginTop: SPACING.xl,
   },
   backButton: {
-    marginRight: 16,
+    marginRight: SPACING.lg,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    ...TYPOGRAPHY.h2,
+    color: COLORS.text,
   },
   inputContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 12,
-    marginBottom: 20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    backgroundColor: COLORS.white,
+    padding: SPACING.xl,
+    borderRadius: BORDER_RADIUS.lg,
+    marginBottom: SPACING.xl,
+    ...SHADOWS.light,
   },
   label: {
-    fontSize: 16,
+    ...TYPOGRAPHY.body,
     fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
+    color: COLORS.text,
+    marginBottom: SPACING.sm,
   },
   selector: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
+    backgroundColor: COLORS.lightGray,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.lg,
   },
   selectorText: {
-    fontSize: 16,
-    color: '#333',
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
   },
   searchButton: {
-    backgroundColor: '#007BFF',
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: COLORS.primary,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: SPACING.sm,
   },
   disabledButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: COLORS.lightGray,
   },
   searchButtonText: {
-    color: 'white',
-    fontSize: 16,
+    color: COLORS.white,
+    ...TYPOGRAPHY.body,
     fontWeight: 'bold',
   },
   center: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: SPACING.xl,
   },
   loadingText: {
-    marginTop: 12,
-    color: '#666',
+    marginTop: SPACING.md,
+    color: COLORS.mediumGray,
   },
   errorText: {
-    color: 'red',
-    fontSize: 16,
+    color: COLORS.error,
+    ...TYPOGRAPHY.body,
   },
   resultCard: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    backgroundColor: COLORS.white,
+    padding: SPACING.xl,
+    borderRadius: BORDER_RADIUS.lg,
+    ...SHADOWS.medium,
   },
   resultTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
+    ...TYPOGRAPHY.h3,
+    color: COLORS.text,
+    marginBottom: SPACING.lg,
   },
   resultRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   resultTextContainer: {
-    marginLeft: 12,
+    marginLeft: SPACING.md,
   },
   resultLabel: {
-    fontSize: 14,
-    color: '#666',
+    ...TYPOGRAPHY.caption,
+    color: COLORS.mediumGray,
   },
   resultValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    ...TYPOGRAPHY.h4,
+    color: COLORS.text,
   },
   divider: {
     height: 1,
-    backgroundColor: '#eee',
-    marginVertical: 16,
+    backgroundColor: COLORS.lightGray,
+    marginVertical: SPACING.lg,
   },
   fareTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 12,
+    ...TYPOGRAPHY.h4,
+    color: COLORS.text,
+    marginBottom: SPACING.md,
   },
   fareRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
   fareLabel: {
-    fontSize: 16,
+    ...TYPOGRAPHY.body,
     fontWeight: '600',
-    color: '#333',
+    color: COLORS.text,
   },
   fareValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#007BFF',
+    ...TYPOGRAPHY.h4,
+    color: COLORS.primary,
   },
   fareLabelSub: {
-    fontSize: 14,
-    color: '#666',
+    ...TYPOGRAPHY.caption,
+    color: COLORS.mediumGray,
   },
   fareValueSub: {
-    fontSize: 14,
-    color: '#666',
+    ...TYPOGRAPHY.caption,
+    color: COLORS.mediumGray,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
     paddingTop: 50,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    padding: SPACING.xl,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: COLORS.lightGray,
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    ...TYPOGRAPHY.h3,
   },
   stationItem: {
-    padding: 16,
+    padding: SPACING.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: COLORS.lightGray,
   },
   stationItemText: {
-    fontSize: 16,
-    color: '#333',
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
   },
 });

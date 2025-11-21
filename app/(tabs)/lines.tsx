@@ -9,6 +9,13 @@ import {
 } from 'react-native';
 import { useGetLinesQuery } from '../../api/wmataApiSlice';
 import { getStationName } from '../../constants/StationNames';
+import {
+  BORDER_RADIUS,
+  COLORS,
+  SHADOWS,
+  SPACING,
+  TYPOGRAPHY,
+} from '../../constants/Theme';
 import { Line } from '../../types/wmata';
 
 export default function LinesScreen() {
@@ -39,7 +46,7 @@ export default function LinesScreen() {
   if (isLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#007BFF" />
+        <ActivityIndicator size="large" color={COLORS.primary} />
         <Text style={styles.loadingText}>Loading rail lines...</Text>
       </View>
     );
@@ -108,81 +115,75 @@ export default function LinesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: COLORS.background,
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: SPACING.xl,
   },
   loadingText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: '#666',
+    marginTop: SPACING.md,
+    ...TYPOGRAPHY.body,
+    color: COLORS.mediumGray,
   },
   errorText: {
-    fontSize: 16,
-    color: 'red',
+    ...TYPOGRAPHY.body,
+    color: COLORS.error,
   },
   listContent: {
-    padding: 16,
+    padding: SPACING.lg,
   },
   card: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    marginBottom: 12,
+    backgroundColor: COLORS.white,
+    borderRadius: BORDER_RADIUS.lg,
+    marginBottom: SPACING.md,
     flexDirection: 'row',
     overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    ...SHADOWS.light,
   },
   lineIndicator: {
-    width: 12,
+    width: 6,
   },
   cardContent: {
     flex: 1,
-    padding: 16,
+    padding: SPACING.lg,
   },
   lineName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
+    ...TYPOGRAPHY.h4,
+    color: COLORS.text,
+    marginBottom: SPACING.xs,
   },
   stationsContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',
-    marginTop: 8,
+    marginTop: SPACING.sm,
   },
   stationText: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 4,
+    ...TYPOGRAPHY.caption,
+    color: COLORS.mediumGray,
+    marginBottom: SPACING.xs,
   },
   descriptionContainer: {
-    padding: 16,
-    backgroundColor: 'white',
+    padding: SPACING.lg,
+    backgroundColor: COLORS.white,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: COLORS.lightGray,
   },
   descriptionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    ...TYPOGRAPHY.h3,
+    color: COLORS.text,
+    marginBottom: SPACING.sm,
   },
   descriptionText: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
+    ...TYPOGRAPHY.caption,
+    color: COLORS.mediumGray,
+    marginBottom: SPACING.xs,
   },
   mapImage: {
     width: '100%',
     height: 450,
-    marginVertical: 16,
+    marginVertical: SPACING.lg,
   },
 });

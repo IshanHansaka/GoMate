@@ -13,6 +13,13 @@ import {
 } from 'react-native';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
 import { LINE_NAMES } from '../../constants/LineNames';
+import {
+  BORDER_RADIUS,
+  COLORS,
+  SHADOWS,
+  SPACING,
+  TYPOGRAPHY,
+} from '../../constants/Theme';
 import { StationInfo } from '../../types/wmata';
 
 export default function HomeScreen() {
@@ -155,7 +162,7 @@ export default function HomeScreen() {
 
       {isLoading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#007BFF" />
+          <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
       ) : error ? (
         <View style={styles.center}>
@@ -181,56 +188,51 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: COLORS.background,
   },
   header: {
-    padding: 20,
-    backgroundColor: 'white',
+    padding: SPACING.xl,
+    backgroundColor: COLORS.white,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: COLORS.lightGray,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#333',
+    ...TYPOGRAPHY.h2,
+    marginBottom: SPACING.lg,
+    color: COLORS.text,
   },
   searchInput: {
-    backgroundColor: '#f0f0f0',
-    padding: 12,
-    borderRadius: 8,
-    fontSize: 16,
+    backgroundColor: COLORS.lightGray,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
   },
   listContent: {
-    padding: 15,
+    padding: SPACING.lg,
   },
   card: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    backgroundColor: COLORS.white,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
+    marginBottom: SPACING.md,
+    ...SHADOWS.light,
   },
   cardContent: {
-    gap: 5,
+    gap: SPACING.xs,
   },
   stationName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    ...TYPOGRAPHY.h4,
+    color: COLORS.text,
   },
   stationAddress: {
-    fontSize: 14,
-    color: '#666',
+    ...TYPOGRAPHY.caption,
+    color: COLORS.mediumGray,
   },
   linesContainer: {
     flexDirection: 'row',
-    gap: 8,
-    marginTop: 5,
+    gap: SPACING.sm,
+    marginTop: SPACING.xs,
   },
   lineDot: {
     width: 12,
@@ -241,41 +243,41 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: SPACING.xl,
   },
   errorText: {
-    color: 'red',
-    fontSize: 16,
+    color: COLORS.error,
+    ...TYPOGRAPHY.body,
   },
   emptyText: {
-    color: '#888',
-    fontSize: 16,
+    color: COLORS.mediumGray,
+    ...TYPOGRAPHY.body,
   },
   filtersContainer: {
-    marginTop: 12,
+    marginTop: SPACING.md,
   },
   filtersContent: {
-    paddingRight: 20,
+    paddingRight: SPACING.xl,
   },
   filterChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    marginRight: 8,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.sm,
+    borderRadius: BORDER_RADIUS.round,
+    backgroundColor: COLORS.lightGray,
+    marginRight: SPACING.sm,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: COLORS.lightGray,
   },
   filterChipActive: {
-    backgroundColor: '#333',
-    borderColor: '#333',
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
   },
   filterText: {
-    fontSize: 14,
-    color: '#666',
+    ...TYPOGRAPHY.caption,
+    color: COLORS.mediumGray,
     fontWeight: '600',
   },
   filterTextActive: {
-    color: 'white',
+    color: COLORS.white,
   },
 });
