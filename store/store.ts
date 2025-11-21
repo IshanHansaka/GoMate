@@ -12,6 +12,7 @@ import {
 } from 'redux-persist';
 
 import { apiSlice } from '../api/apiSlice';
+import { wmataApiSlice } from '../api/wmataApiSlice';
 import authReducer from '../features/auth/authSlice';
 
 interface SecureStorageInterface {
@@ -47,10 +48,10 @@ const SecureStorage: SecureStorageInterface = {
 
 // 1. Configuration for redux-persist
 const persistConfig = {
-  key: 'root', // The key for the storage
+  key: 'root_v1', // Changed key to reset persisted state and fix "Unexpected key" error
   storage: SecureStorage, // The storage engine
   whitelist: ['auth'], // ONLY persist the 'auth' slice
-  blacklist: [apiSlice.reducerPath], // <-- 2. Add API to blacklist
+  blacklist: [apiSlice.reducerPath, wmataApiSlice.reducerPath], // <-- 2. Add API to blacklist
   keyPrefix: 'secure_', // optional prefix to distinguish in SecureStore
 };
 
@@ -58,6 +59,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   [apiSlice.reducerPath]: apiSlice.reducer, // <-- 3. Add the api reducer
+  [wmataApiSlice.reducerPath]: wmataApiSlice.reducer,
 });
 
 // 3. Create the persisted reducer
@@ -72,7 +74,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(apiSlice.middleware), // <-- 4. Add the api middleware
+    }).concat(apiSlice.middleware, wmataApiSlice.middleware), // <-- 4. Add the api middleware
 });
 
 // 5. Create the persistor
