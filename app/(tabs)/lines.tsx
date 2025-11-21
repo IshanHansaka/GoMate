@@ -3,10 +3,8 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  Modal,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { useGetLinesQuery } from '../../api/wmataApiSlice';
@@ -72,33 +70,13 @@ export default function LinesScreen() {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Image
-              source={{
-                uri: 'https://www.wmata.com/schedules/maps/images/system-map-rail-effective-June-22-2025.png',
-              }}
-              style={styles.mapImage}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-
-          <Modal visible={isModalVisible} transparent={true}>
-            <View style={styles.modalContainer}>
-              <TouchableOpacity
-                style={styles.modalCloseButton}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.modalCloseText}>Close</Text>
-              </TouchableOpacity>
-              <Image
-                source={{
-                  uri: 'https://www.wmata.com/schedules/maps/images/system-map-rail-effective-June-22-2025.png',
-                }}
-                style={styles.fullMapImage}
-                resizeMode="contain"
-              />
-            </View>
-          </Modal>
+          <Image
+            source={{
+              uri: 'https://www.wmata.com/schedules/maps/images/system-map-rail-effective-June-22-2025.png',
+            }}
+            style={styles.mapImage}
+            resizeMode="contain"
+          />
         </>
       }
       renderItem={({ item }) => (
@@ -206,27 +184,5 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 450,
     marginVertical: 16,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalCloseButton: {
-    position: 'absolute',
-    top: 40,
-    right: 20,
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 8,
-  },
-  modalCloseText: {
-    color: '#007BFF',
-    fontWeight: 'bold',
-  },
-  fullMapImage: {
-    width: '90%',
-    height: '80%',
   },
 });
