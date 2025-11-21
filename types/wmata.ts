@@ -67,3 +67,19 @@ export interface StationTime {
 export interface StationTimesResponse {
   StationTimes: StationTime[];
 }
+
+export interface NextTrainInfo {
+  Car: string | null;
+  Destination: string;
+  DestinationCode: string | null;
+  DestinationName: string;
+  Group: string;
+  Line: string;
+  LocationCode: string;
+  LocationName: string;
+  Min: string;
+}
+
+export interface StationPredictionsResponse {
+  Trains: NextTrainInfo[];
+}
