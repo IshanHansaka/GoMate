@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   FlatList,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -11,19 +12,34 @@ import {
   View,
 } from 'react-native';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
+import { LINE_NAMES } from '../../constants/LineNames';
 import { StationInfo } from '../../types/wmata';
 
 export default function HomeScreen() {
   const router = useRouter();
   const [searchText, setSearchText] = useState('');
+  const [selectedLine, setSelectedLine] = useState<string | null>(null);
 
   const { data, isLoading, error } = useGetStationsQuery({});
 
   const stations: StationInfo[] = data?.Stations || [];
 
-  const filteredStations = stations.filter((station) =>
-    station.Name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredStations = stations
+    .filter((station) => {
+      const matchesSearch = station.Name.toLowerCase().includes(
+        searchText.toLowerCase()
+      );
+      const matchesLine = selectedLine
+        ? [
+            station.LineCode1,
+            station.LineCode2,
+            station.LineCode3,
+            station.LineCode4,
+          ].includes(selectedLine)
+        : true;
+      return matchesSearch && matchesLine;
+    })
+    .sort((a, b) => a.Name.localeCompare(b.Name));
 
   const handleStationPress = (station: StationInfo) => {
     router.push({
@@ -88,6 +104,53 @@ export default function HomeScreen() {
           value={searchText}
           onChangeText={setSearchText}
         />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.filtersContainer}
+          contentContainerStyle={styles.filtersContent}
+        >
+          <TouchableOpacity
+            style={[
+              styles.filterChip,
+              selectedLine === null && styles.filterChipActive,
+            ]}
+            onPress={() => setSelectedLine(null)}
+          >
+            <Text
+              style={[
+                styles.filterText,
+                selectedLine === null && styles.filterTextActive,
+              ]}
+            >
+              All
+            </Text>
+          </TouchableOpacity>
+          {Object.entries(LINE_NAMES).map(([code, name]) => (
+            <TouchableOpacity
+              key={code}
+              style={[
+                styles.filterChip,
+                selectedLine === code && {
+                  backgroundColor: getLineColor(code),
+                  borderColor: getLineColor(code),
+                },
+              ]}
+              onPress={() =>
+                setSelectedLine(code === selectedLine ? null : code)
+              }
+            >
+              <Text
+                style={[
+                  styles.filterText,
+                  selectedLine === code && styles.filterTextActive,
+                ]}
+              >
+                {name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
 
       {isLoading ? (
@@ -187,5 +250,32 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#888',
     fontSize: 16,
+  },
+  filtersContainer: {
+    marginTop: 12,
+  },
+  filtersContent: {
+    paddingRight: 20,
+  },
+  filterChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#f0f0f0',
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  filterChipActive: {
+    backgroundColor: '#333',
+    borderColor: '#333',
+  },
+  filterText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '600',
+  },
+  filterTextActive: {
+    color: 'white',
   },
 });
