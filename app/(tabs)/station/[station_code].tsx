@@ -24,6 +24,12 @@ import {
   StationParking,
   StationTime,
 } from '../../../types/wmata';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addFavourite,
+  removeFavourite,
+} from '../../../features/favourites/favouritesSlice';
+import { RootState } from '../../../store/store';
 
 const DAYS = [
   'Monday',
@@ -85,6 +91,20 @@ const StationScreen = () => {
     isInfoLoading || isParkingLoading || isTimesLoading || isPredictionsLoading;
   const error = infoError || parkingError || timesError || predictionsError;
 
+  const dispatch = useDispatch();
+  const favourites = useSelector(
+    (state: RootState) => state.favourites.stationCodes
+  );
+  const isFavourite = favourites.includes(code);
+
+  const toggleFavourite = () => {
+    if (isFavourite) {
+      dispatch(removeFavourite(code));
+    } else {
+      dispatch(addFavourite(code));
+    }
+  };
+
   if (isLoading) {
     return (
       <View style={styles.center}>
@@ -112,7 +132,22 @@ const StationScreen = () => {
       {/* Station Info */}
       {stationInfo && (
         <View style={styles.section}>
-          <Text style={styles.title}>{stationInfo.Name}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={styles.title}>{stationInfo.Name}</Text>
+            <TouchableOpacity onPress={toggleFavourite}>
+              <Ionicons
+                name={isFavourite ? 'heart' : 'heart-outline'}
+                size={28}
+                color={isFavourite ? 'red' : '#333'}
+              />
+            </TouchableOpacity>
+          </View>
           <Text style={styles.subtitle}>
             {stationInfo.Address?.Street}, {stationInfo.Address?.City},{' '}
             {stationInfo.Address?.State}

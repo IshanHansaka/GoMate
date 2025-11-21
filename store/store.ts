@@ -14,6 +14,7 @@ import {
 import { apiSlice } from '../api/apiSlice';
 import { wmataApiSlice } from '../api/wmataApiSlice';
 import authReducer from '../features/auth/authSlice';
+import favouritesReducer from '../features/favourites/favouritesSlice';
 
 interface SecureStorageInterface {
   getItem: (key: string) => Promise<string | null>;
@@ -50,7 +51,7 @@ const SecureStorage: SecureStorageInterface = {
 const persistConfig = {
   key: 'root_v1', // Changed key to reset persisted state and fix "Unexpected key" error
   storage: SecureStorage, // The storage engine
-  whitelist: ['auth'], // ONLY persist the 'auth' slice
+  whitelist: ['auth', 'favourites'], // ONLY persist the 'auth' and 'favourites' slices
   blacklist: [apiSlice.reducerPath, wmataApiSlice.reducerPath], // <-- 2. Add API to blacklist
   keyPrefix: 'secure_', // optional prefix to distinguish in SecureStore
 };
@@ -58,6 +59,7 @@ const persistConfig = {
 // 2. Combine all our reducers
 const rootReducer = combineReducers({
   auth: authReducer,
+  favourites: favouritesReducer,
   [apiSlice.reducerPath]: apiSlice.reducer, // <-- 3. Add the api reducer
   [wmataApiSlice.reducerPath]: wmataApiSlice.reducer,
 });
