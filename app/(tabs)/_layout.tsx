@@ -26,6 +26,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="stations"
+        options={{
+          title: 'Stations',
+          tabBarIcon: ({ color }) => (
+            <Feather name="map-pin" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="favourites"
         options={{
           title: 'My Favourites',
