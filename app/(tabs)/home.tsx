@@ -1,407 +1,337 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useGetStationEntrancesQuery } from '../../api/wmataApiSlice';
-import { getStationName } from '../../constants/StationNames';
-import { StationEntrance } from '../../types/wmata';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
+import { useGetStationsQuery } from '../../api/wmataApiSlice';
+import { selectCurrentUser } from '../../features/auth/authSlice';
+import { StationInfo } from '../../types/wmata';
 
-export default function HomeScreen() {
-  const [location, setLocation] = useState<Location.LocationObject | null>(
-    null
-  );
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [radius, setRadius] = useState('10');
-  const [searchParams, setSearchParams] = useState<{
-    lat: number;
-    lon: number;
-    radius: number;
-  } | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
-  const [manualLat, setManualLat] = useState('38.8978'); // Default to Metro Center DC
-  const [manualLon, setManualLon] = useState('-77.0282'); // Default to Metro Center DC
-  const [isManualMode, setIsManualMode] = useState(false);
+const HomeScreen = () => {
   const router = useRouter();
+  const user = useSelector(selectCurrentUser);
+  const { data, isLoading, error } = useGetStationsQuery({});
+  const stations: StationInfo[] = data?.Stations?.slice(0, 5) || [];
 
-  useEffect(() => {
-    (async () => {
-      try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setErrorMsg('Permission to access location was denied');
-          return;
-        }
+  const getLineColor = (lineCode: string | null) => {
+    switch (lineCode) {
+      case 'RD':
+        return '#D11241';
+      case 'BL':
+        return '#0072CE';
+      case 'YL':
+        return '#FFD100';
+      case 'OR':
+        return '#D45D00';
+      case 'GR':
+        return '#00B140';
+      case 'SV':
+        return '#919D9D';
+      default:
+        return '#eee';
+    }
+  };
 
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
-      } catch (error) {
-        setErrorMsg(
-          'Location request failed due to unsatisfied device settings.'
-        );
+  const shortcuts = [
+    {
+      id: 'journey',
+      title: 'Journey',
+      icon: 'map',
+      route: '/(tabs)/journey',
+      color: '#007BFF',
+    },
+    {
+      id: 'lines',
+      title: 'Lines',
+      icon: 'git-network',
+      route: '/(tabs)/lines',
+      color: '#28A745',
+    },
+    {
+      id: 'nearby',
+      title: 'Nearby',
+      icon: 'location',
+      route: '/(tabs)/nearby',
+      color: '#FFC107',
+    },
+    {
+      id: 'stations',
+      title: 'Stations',
+      icon: 'train',
+      route: '/(tabs)/stations',
+      color: '#6F42C1',
+    },
+  ];
+
+  const renderStationCard = ({ item }: { item: StationInfo }) => (
+    <TouchableOpacity
+      style={styles.stationCard}
+      onPress={() =>
+        router.push({
+          pathname: '/(tabs)/station/[station_code]',
+          params: { station_code: item.Code },
+        })
       }
-    })();
-  }, []);
-
-  const handleSearch = () => {
-    if ((location || isManualMode) && radius) {
-      setIsSearching(true);
-      setSearchParams({
-        lat: isManualMode
-          ? parseFloat(manualLat)
-          : location?.coords.latitude || 0,
-        lon: isManualMode
-          ? parseFloat(manualLon)
-          : location?.coords.longitude || 0,
-        radius: parseFloat(radius) * 1000, // Convert km to meters
-      });
-      setTimeout(() => setIsSearching(false), 1000); // Simulate a delay for better UX
-    }
-  };
-
-  const { data, isLoading, error, refetch } = useGetStationEntrancesQuery(
-    searchParams || { lat: 0, lon: 0, radius: 0 },
-    { skip: !searchParams }
+    >
+      <View style={styles.stationHeader}>
+        <View style={styles.iconContainer}>
+          <Ionicons name="train-outline" size={24} color="#333" />
+        </View>
+        <View style={styles.linesRow}>
+          {[item.LineCode1, item.LineCode2, item.LineCode3, item.LineCode4]
+            .filter(Boolean)
+            .map((line, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.lineDot,
+                  { backgroundColor: getLineColor(line) },
+                ]}
+              />
+            ))}
+        </View>
+      </View>
+      <Text style={styles.stationName} numberOfLines={1}>
+        {item.Name}
+      </Text>
+      <Text style={styles.stationAddress} numberOfLines={1}>
+        {item.Address?.City}, {item.Address?.State}
+      </Text>
+    </TouchableOpacity>
   );
-
-  const entrances: StationEntrance[] = data?.Entrances || [];
-
-  // Filter unique stations based on StationCode1
-  const uniqueStations = entrances.reduce((acc, current) => {
-    const x = acc.find((item) => item.StationCode1 === current.StationCode1);
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
-  }, [] as StationEntrance[]);
-
-  const handleStationPress = (stationCode: string) => {
-    router.push(`/station/${stationCode}`);
-  };
-
-  if (errorMsg) {
-    return (
-      <View style={styles.center}>
-        <Ionicons name="location-outline" size={64} color="red" />
-        <Text style={styles.errorText}>{errorMsg}</Text>
-        <Text style={styles.subErrorText}>
-          Please enable location services to find nearby stations.
-        </Text>
-        <TouchableOpacity
-          style={styles.retryButton}
-          onPress={() => {
-            setErrorMsg(null);
-            setLocation(null);
-            // Show loading spinner and message
-            setTimeout(() => {
-              (async () => {
-                try {
-                  let { status } =
-                    await Location.requestForegroundPermissionsAsync();
-                  if (status !== 'granted') {
-                    setErrorMsg('Permission to access location was denied');
-                    return;
-                  }
-
-                  let location = await Location.getCurrentPositionAsync({});
-                  setLocation(location);
-                } catch (error) {
-                  setErrorMsg(
-                    'Location request failed due to unsatisfied device settings. Please enable GPS.'
-                  );
-                }
-              })();
-            }, 500); // Simulate a short delay for better UX
-          }}
-        >
-          <Text style={styles.retryText}>Retry</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.retryButton, { marginTop: 10 }]}
-          onPress={() => {
-            setIsManualMode(true);
-            setErrorMsg(null);
-            setLocation(null);
-          }}
-        >
-          <Text style={styles.retryText}>Use Manual Location</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  if (!location && !isManualMode) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#007BFF" />
-        <Text style={styles.loadingText}>Getting your location...</Text>
-        <TouchableOpacity
-          style={[styles.retryButton, { marginTop: 20 }]}
-          onPress={() => setIsManualMode(true)}
-        >
-          <Text style={styles.retryText}>Use Manual Location</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Nearby Stations</Text>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.input}
-            value={radius}
-            onChangeText={setRadius}
-            keyboardType="numeric"
-            placeholder="Radius (km)"
-            placeholderTextColor="#999"
-          />
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-            <Text style={styles.searchButtonText}>Search</Text>
-          </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greeting}>
+              Hello, {user?.firstName || 'Traveler'}!
+            </Text>
+            <Text style={styles.subtitle}>Where are you going today?</Text>
+          </View>
         </View>
 
+        {/* Hero / Search Placeholder */}
         <TouchableOpacity
-          style={styles.manualModeButton}
-          onPress={() => setIsManualMode(!isManualMode)}
+          style={styles.searchBar}
+          onPress={() => router.push('/(tabs)/stations')}
         >
-          <Text style={styles.manualModeText}>
-            {isManualMode ? 'Use GPS Location' : 'Use Manual Location'}
-          </Text>
+          <Ionicons name="search" size={20} color="#666" />
+          <Text style={styles.searchText}>Search for a station...</Text>
         </TouchableOpacity>
 
-        {isManualMode && (
-          <View style={styles.manualInputContainer}>
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              value={manualLat}
-              onChangeText={setManualLat}
-              keyboardType="numeric"
-              placeholder="Latitude"
-              placeholderTextColor="#999"
-            />
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              value={manualLon}
-              onChangeText={setManualLon}
-              keyboardType="numeric"
-              placeholder="Longitude"
-              placeholderTextColor="#999"
-            />
-          </View>
-        )}
-        {isManualMode && (
-          <Text style={styles.manualHint}>
-            Default: Metro Center DC (38.8978, -77.0282)
-          </Text>
-        )}
-      </View>
-
-      {isLoading || isSearching ? (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="#007BFF" />
-          <Text style={styles.loadingText}>Finding nearby stations...</Text>
-        </View>
-      ) : error ? (
-        <View style={styles.center}>
-          <Text style={styles.errorText}>Error loading nearby stations.</Text>
-          <TouchableOpacity onPress={refetch} style={styles.retryButton}>
-            <Text style={styles.retryText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <FlatList
-          data={uniqueStations}
-          keyExtractor={(item) => item.ID}
-          renderItem={({ item }) => (
+        {/* Shortcuts Grid */}
+        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <View style={styles.shortcutsGrid}>
+          {shortcuts.map((item) => (
             <TouchableOpacity
-              style={styles.card}
-              onPress={() => handleStationPress(item.StationCode1)}
+              key={item.id}
+              style={styles.shortcutCard}
+              onPress={() => router.push(item.route as any)}
             >
-              <View style={styles.cardContent}>
-                <View style={styles.iconContainer}>
-                  <Ionicons name="train-outline" size={24} color="#007BFF" />
-                </View>
-                <View style={styles.textContainer}>
-                  <Text style={styles.stationName}>
-                    {getStationName(item.StationCode1)}
-                  </Text>
-                  <Text style={styles.distance}>{item.Description}</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#ccc" />
+              <View
+                style={[
+                  styles.iconCircle,
+                  { backgroundColor: item.color + '20' },
+                ]}
+              >
+                <Ionicons
+                  name={item.icon as any}
+                  size={24}
+                  color={item.color}
+                />
               </View>
+              <Text style={styles.shortcutTitle}>{item.title}</Text>
             </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Featured Stations */}
+        <View style={styles.stationsSection}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Popular Stations</Text>
+            <TouchableOpacity onPress={() => router.push('/(tabs)/stations')}>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+
+          {isLoading ? (
+            <ActivityIndicator
+              size="large"
+              color="#007BFF"
+              style={{ marginVertical: 20 }}
+            />
+          ) : (
+            <FlatList
+              data={stations}
+              renderItem={renderStationCard}
+              keyExtractor={(item) => item.Code}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.stationsList}
+            />
           )}
-          contentContainerStyle={styles.listContent}
-          ListEmptyComponent={
-            <View style={styles.center}>
-              <Text style={styles.emptyText}>
-                {searchParams
-                  ? 'No stations found nearby.'
-                  : 'Enter a radius and search to find stations.'}
-              </Text>
-            </View>
-          }
-        />
-      )}
-    </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8f9fa',
   },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  scrollContent: {
     padding: 20,
   },
   header: {
-    padding: 20,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  title: {
+  greeting: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#666',
-    marginTop: 4,
   },
-  listContent: {
-    padding: 16,
+  profileButton: {
+    padding: 4,
   },
-  card: {
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'white',
+    padding: 12,
     borderRadius: 12,
-    marginBottom: 12,
-    padding: 16,
+    marginBottom: 24,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  searchText: {
+    marginLeft: 10,
+    color: '#999',
+    fontSize: 16,
   },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#e6f2ff',
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 12,
+  },
+  shortcutsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  shortcutCard: {
+    width: '48%',
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 16,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  iconCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginBottom: 12,
   },
-  textContainer: {
-    flex: 1,
-  },
-  stationName: {
+  shortcutTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
-    marginBottom: 2,
   },
-  distance: {
-    fontSize: 12,
-    color: '#666',
+  stationsSection: {
+    marginBottom: 20,
   },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: '#666',
-  },
-  errorText: {
-    fontSize: 16,
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subErrorText: {
-    fontSize: 14,
-    color: '#ff0000ff',
-    textAlign: 'center',
-  },
-  retryButton: {
-    marginTop: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#007BFF',
-    borderRadius: 8,
-  },
-  retryText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#666',
-    fontStyle: 'italic',
-  },
-  searchContainer: {
+  sectionHeader: {
     flexDirection: 'row',
-    marginTop: 12,
-    gap: 10,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 16,
-    color: '#333',
-  },
-  searchButton: {
-    backgroundColor: '#007BFF',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 12,
   },
-  searchButtonText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  manualModeButton: {
-    marginTop: 12,
-    alignSelf: 'flex-start',
-  },
-  manualModeText: {
+  seeAllText: {
     color: '#007BFF',
     fontSize: 14,
     fontWeight: '600',
   },
-  manualInputContainer: {
-    flexDirection: 'row',
-    marginTop: 8,
-    gap: 10,
+  stationsList: {
+    paddingRight: 20,
   },
-  manualHint: {
+  stationCard: {
+    backgroundColor: 'white',
+    width: 160,
+    padding: 16,
+    borderRadius: 16,
+    marginRight: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  stationHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  iconContainer: {
+    backgroundColor: '#f0f0f0',
+    padding: 8,
+    borderRadius: 8,
+  },
+  linesRow: {
+    flexDirection: 'row',
+    gap: 4,
+    flexWrap: 'wrap',
+    maxWidth: 60,
+    justifyContent: 'flex-end',
+  },
+  lineDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  stationName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  stationAddress: {
     fontSize: 12,
     color: '#666',
-    marginTop: 4,
-    fontStyle: 'italic',
   },
 });
+
+export default HomeScreen;

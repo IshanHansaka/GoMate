@@ -80,6 +80,13 @@ export default function TabLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="nearby"
+        options={{
+          title: 'Nearby',
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
