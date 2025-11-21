@@ -53,6 +53,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="lines"
+        options={{
+          title: 'Lines',
+          tabBarIcon: ({ color }) => (
+            <Feather name="git-branch" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',

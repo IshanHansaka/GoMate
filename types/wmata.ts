@@ -114,3 +114,16 @@ export interface StationEntrance {
 export interface StationEntrancesResponse {
   Entrances: StationEntrance[];
 }
+
+export interface Line {
+  DisplayName: string;
+  EndStationCode: string;
+  InternalDestination1: string;
+  InternalDestination2: string;
+  LineCode: string;
+  StartStationCode: string;
+}
+
+export interface LinesResponse {
+  Lines: Line[];
+}

@@ -49,6 +49,9 @@ export const wmataApiSlice = createApi({
         return queryString;
       },
     }),
+    getLines: builder.query({
+      query: () => '/Rail.svc/json/jLines',
+    }),
   }),
 });
 
@@ -60,4 +63,5 @@ export const {
   useGetStationPredictionsQuery,
   useGetRailIncidentsQuery,
   useGetStationEntrancesQuery,
+  useGetLinesQuery,
 } = wmataApiSlice;
