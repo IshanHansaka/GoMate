@@ -43,6 +43,13 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="station/[station_code]"
+        options={{
+          href: null,
+          title: 'Station Details',
+        }}
+      />
     </Tabs>
   );
 }
