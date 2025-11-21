@@ -7,6 +7,7 @@ import type {
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { AuthUser } from '../types/auth';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: 'https://dummyjson.com',
@@ -71,8 +72,19 @@ export const apiSlice = createApi({
         body: credentials,
       }),
     }),
+    getCurrentUser: builder.query<AuthUser, void>({
+      query: () => '/auth/me',
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log('Current User Details:', JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error('Error fetching user details:', error);
+        }
+      },
+    }),
     // ...other endpoints
   }),
 });
 
-export const { useLoginMutation } = apiSlice;
+export const { useLoginMutation, useGetCurrentUserQuery } = apiSlice;

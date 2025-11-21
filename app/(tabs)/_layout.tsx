@@ -35,29 +35,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="favourites"
-        options={{
-          title: 'My Favourites',
-          tabBarIcon: ({ color }) => (
-            <Feather name="heart" size={24} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="incidents"
         options={{
           title: 'Incidents',
           tabBarIcon: ({ color }) => (
             <Feather name="alert-triangle" size={24} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="lines"
-        options={{
-          title: 'Lines',
-          tabBarIcon: ({ color }) => (
-            <Feather name="git-branch" size={24} color={color} />
           ),
         }}
       />
@@ -75,6 +57,27 @@ export default function TabLayout() {
         options={{
           href: null,
           title: 'Station Details',
+        }}
+      />
+      <Tabs.Screen
+        name="favourites"
+        options={{
+          title: 'Favourites',
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="journey"
+        options={{
+          title: 'Journey',
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="lines"
+        options={{
+          title: 'Lines',
+          href: null,
         }}
       />
     </Tabs>

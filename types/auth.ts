@@ -20,6 +20,16 @@ export interface AuthUser {
   email: string;
   firstName: string;
   lastName: string;
+  maidenName?: string;
+  phone?: string;
+  image?: string;
+  address?: {
+    address: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
 }
 
 export interface AuthTokens {
