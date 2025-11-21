@@ -100,3 +100,17 @@ export interface RailIncident {
 export interface RailIncidentsResponse {
   Incidents: RailIncident[];
 }
+
+export interface StationEntrance {
+  Description: string;
+  ID: string;
+  Lat: number;
+  Lon: number;
+  Name: string;
+  StationCode1: string;
+  StationCode2: string;
+}
+
+export interface StationEntrancesResponse {
+  Entrances: StationEntrance[];
+}

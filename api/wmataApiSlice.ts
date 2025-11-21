@@ -36,6 +36,19 @@ export const wmataApiSlice = createApi({
     getRailIncidents: builder.query({
       query: () => '/Incidents.svc/json/Incidents',
     }),
+    getStationEntrances: builder.query({
+      query: ({ lat, lon, radius }) => {
+        let queryString = '/Rail.svc/json/jStationEntrances';
+        const params = [];
+        if (lat) params.push(`Lat=${lat}`);
+        if (lon) params.push(`Lon=${lon}`);
+        if (radius) params.push(`Radius=${radius}`);
+        if (params.length > 0) {
+          queryString += `?${params.join('&')}`;
+        }
+        return queryString;
+      },
+    }),
   }),
 });
 
@@ -46,4 +59,5 @@ export const {
   useGetStationTimesQuery,
   useGetStationPredictionsQuery,
   useGetRailIncidentsQuery,
+  useGetStationEntrancesQuery,
 } = wmataApiSlice;
