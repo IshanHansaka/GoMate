@@ -29,6 +29,10 @@ export const wmataApiSlice = createApi({
       query: (stationCode) =>
         `/Rail.svc/json/jStationTimes?StationCode=${stationCode}`,
     }),
+    getStationPredictions: builder.query({
+      query: (stationCode) =>
+        `/StationPrediction.svc/json/GetPrediction/${stationCode}`,
+    }),
   }),
 });
 
@@ -37,4 +41,5 @@ export const {
   useGetStationsQuery,
   useGetStationParkingQuery,
   useGetStationTimesQuery,
+  useGetStationPredictionsQuery,
 } = wmataApiSlice;
