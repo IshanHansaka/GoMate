@@ -113,7 +113,7 @@ export default function NearbyScreen() {
   if (errorMsg) {
     return (
       <View style={styles.center}>
-        <Feather name="map-pin" size={64} color="red" />
+        <Feather name="map-pin" size={64} color={COLORS.error} />
         <Text style={styles.errorText}>{errorMsg}</Text>
         <Text style={styles.subErrorText}>
           Please enable location services to find nearby stations.

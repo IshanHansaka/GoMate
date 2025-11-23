@@ -1,12 +1,14 @@
 import { Feather } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 
 // You can explore the built-in useColorScheme hook
 // import { useColorScheme } from '@/components/useColorScheme';
 
 export default function TabLayout() {
   // const colorScheme = useColorScheme();
+  const router = useRouter();
 
   return (
     <Tabs
@@ -14,6 +16,15 @@ export default function TabLayout() {
         // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         // You can uncomment the line above to use your theme colors
         headerShown: true,
+        headerTitle: 'GoMate',
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => router.push('/(tabs)/favourites')}
+            style={{ marginRight: 16 }}
+          >
+            <Feather name="heart" size={24} color='gray' />
+          </TouchableOpacity>
+        ),
       }}
     >
       <Tabs.Screen
@@ -35,11 +46,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="favourites"
+        name="incidents"
         options={{
-          title: 'Favourites',
+          title: 'Incidents',
           tabBarIcon: ({ color }) => (
-            <Feather name="heart" size={24} color={color} />
+            <Feather name="alert-triangle" size={24} color={color} />
           ),
         }}
       />
@@ -60,9 +71,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="incidents"
+        name="favourites"
         options={{
-          title: 'Incidents',
+          title: 'Favourites',
           href: null,
         }}
       />

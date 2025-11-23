@@ -63,7 +63,7 @@ export default function FavouritesScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <View style={styles.header}>
-        <Text style={styles.title}>My Favourites</Text>
+        <Text style={styles.title}>Favourite Stations</Text>
       </View>
 
       <FlatList
