@@ -91,7 +91,7 @@ const HomeScreen = () => {
     >
       <View style={styles.stationHeader}>
         <View style={styles.iconContainer}>
-          <Ionicons name="train-outline" size={24} color={COLORS.text} />{' '}
+          <Ionicons name="train-outline" size={24} color={COLORS.text} />
         </View>
         <View style={styles.linesRow}>
           {[item.LineCode1, item.LineCode2, item.LineCode3, item.LineCode4]
@@ -117,7 +117,7 @@ const HomeScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header Section */}
         <View style={styles.header}>
@@ -198,6 +198,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: SPACING.xl,
+    margin: 0,
+    flexGrow: 1,
   },
   header: {
     flexDirection: 'row',
