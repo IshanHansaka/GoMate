@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -231,7 +231,24 @@ const StationScreen = () => {
           <WebView
             style={styles.map}
             source={{
-              html: `<iframe width="100%" height="100%" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${stationInfo.Lat},${stationInfo.Lon}&z=15&output=embed"></iframe>`,
+              html: `
+                <style>
+                  body, html {
+                    margin: 0;
+                    padding: 0;
+                  }
+                  iframe {
+                    border: 0 !important;
+                    outline: none !important;
+                  }
+                </style>
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  frameborder="0" 
+                  src="https://maps.google.com/maps?q=${stationInfo.Lat},${stationInfo.Lon}&z=15&output=embed">
+                </iframe>
+              `,
             }}
             scrollEnabled={false}
           />
@@ -364,7 +381,7 @@ const StationScreen = () => {
             <Text style={{ fontSize: 16, color: COLORS.text }}>
               {selectedDay}
             </Text>
-            <Ionicons
+            <Feather
               name={isDropdownOpen ? 'chevron-up' : 'chevron-down'}
               size={20}
               color={COLORS.mediumGray}
@@ -547,6 +564,7 @@ const createStyles = (COLORS: ReturnType<typeof getColors>) =>
       height: 200,
       overflow: 'hidden',
       position: 'relative',
+      borderRadius: BORDER_RADIUS.md,
     },
     map: { flex: 1 },
 

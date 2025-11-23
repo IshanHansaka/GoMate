@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -93,7 +93,7 @@ export default function JourneyScreen() {
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Select Station</Text>
             <TouchableOpacity onPress={() => setVisible(false)}>
-              <Ionicons name="close" size={24} color={COLORS.text} />
+              <Feather name="x" size={24} color={COLORS.text} />
             </TouchableOpacity>
           </View>
           <FlatList
@@ -124,7 +124,7 @@ export default function JourneyScreen() {
           onPress={() => router.back()}
           style={styles.backButton}
         >
-          <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+          <Feather name="arrow-left" size={24} color={COLORS.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Trip Planner</Text>
       </View>
@@ -138,7 +138,7 @@ export default function JourneyScreen() {
           <Text style={styles.selectorText}>
             {fromStation ? STATION_NAMES[fromStation] : 'Select Origin'}
           </Text>
-          <Ionicons name="chevron-down" size={20} color={COLORS.mediumGray} />
+          <Feather name="chevron-down" size={20} color={COLORS.mediumGray} />
         </TouchableOpacity>
 
         <Text style={styles.label}>To:</Text>
@@ -149,7 +149,7 @@ export default function JourneyScreen() {
           <Text style={styles.selectorText}>
             {toStation ? STATION_NAMES[toStation] : 'Select Destination'}
           </Text>
-          <Ionicons name="chevron-down" size={20} color={COLORS.mediumGray} />
+          <Feather name="chevron-down" size={20} color={COLORS.mediumGray} />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -186,7 +186,7 @@ export default function JourneyScreen() {
           <Text style={styles.resultTitle}>Trip Details</Text>
 
           <View style={styles.resultRow}>
-            <Ionicons name="time-outline" size={24} color={COLORS.primary} />
+            <Feather name="clock" size={24} color={COLORS.primary} />
             <View style={styles.resultTextContainer}>
               <Text style={styles.resultLabel}>Estimated Time</Text>
               <Text style={styles.resultValue}>{journeyInfo.RailTime} min</Text>
@@ -194,7 +194,7 @@ export default function JourneyScreen() {
           </View>
 
           <View style={styles.resultRow}>
-            <Ionicons name="map-outline" size={24} color={COLORS.primary} />
+            <Feather name="map" size={24} color={COLORS.primary} />
             <View style={styles.resultTextContainer}>
               <Text style={styles.resultLabel}>Distance</Text>
               <Text style={styles.resultValue}>

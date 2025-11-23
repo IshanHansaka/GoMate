@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { Linking, StyleSheet, Text, View } from 'react-native';
 import { LINE_NAMES } from '../constants/LineNames';
@@ -80,7 +80,7 @@ const IncidentCard: React.FC<IncidentCardProps> = ({ incident }) => {
       ))}
 
       <View style={styles.footer}>
-        <Ionicons name="time-outline" size={14} color={COLORS.mediumGray} />
+        <Feather name="clock" size={14} color={COLORS.mediumGray} />
         <Text style={styles.dateText}>
           Updated: {new Date(incident.DateUpdated).toLocaleString()}
         </Text>

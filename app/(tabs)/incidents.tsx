@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import {
   ActivityIndicator,
@@ -54,7 +54,7 @@ export default function IncidentsScreen() {
         }
         ListEmptyComponent={
           <View style={styles.center}>
-            <Ionicons name="checkmark-circle-outline" size={64} color="green" />
+            <Feather name="check-circle" size={64} color="green" />
             <Text style={styles.emptyText}>No active incidents reported.</Text>
             <Text style={styles.subEmptyText}>
               Service is running normally.

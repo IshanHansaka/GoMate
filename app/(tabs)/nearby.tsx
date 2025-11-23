@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -113,7 +113,7 @@ export default function NearbyScreen() {
   if (errorMsg) {
     return (
       <View style={styles.center}>
-        <Ionicons name="location-outline" size={64} color="red" />
+        <Feather name="map-pin" size={64} color="red" />
         <Text style={styles.errorText}>{errorMsg}</Text>
         <Text style={styles.subErrorText}>
           Please enable location services to find nearby stations.
