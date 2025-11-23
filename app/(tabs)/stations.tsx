@@ -12,18 +12,18 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
+import StationListCard from '../../components/StationListCard';
 import { LINE_NAMES } from '../../constants/LineNames';
 import {
   BORDER_RADIUS,
   COLORS,
-  SHADOWS,
   SPACING,
   TYPOGRAPHY,
 } from '../../constants/Theme';
 import { StationInfo } from '../../types/wmata';
 import { getLineColor } from '../../utils/lineColors';
 
-export default function HomeScreen() {
+export default function StationsScreen() {
   const router = useRouter();
   const [searchText, setSearchText] = useState('');
   const [selectedLine, setSelectedLine] = useState<string | null>(null);
@@ -57,30 +57,7 @@ export default function HomeScreen() {
   };
 
   const renderItem = ({ item }: { item: StationInfo }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => handleStationPress(item)}
-    >
-      <View style={styles.cardContent}>
-        <Text style={styles.stationName}>{item.Name}</Text>
-        <Text style={styles.stationAddress}>
-          {item.Address?.Street}, {item.Address?.City}
-        </Text>
-        <View style={styles.linesContainer}>
-          {[item.LineCode1, item.LineCode2, item.LineCode3, item.LineCode4]
-            .filter(Boolean)
-            .map((line, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.lineDot,
-                  { backgroundColor: getLineColor(line, 'transparent') },
-                ]}
-              />
-            ))}
-        </View>
-      </View>
-    </TouchableOpacity>
+    <StationListCard station={item} onPress={handleStationPress} />
   );
 
   return (
@@ -192,34 +169,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: SPACING.lg,
-  },
-  card: {
-    backgroundColor: COLORS.white,
-    borderRadius: BORDER_RADIUS.lg,
-    padding: SPACING.lg,
-    marginBottom: SPACING.md,
-    ...SHADOWS.light,
-  },
-  cardContent: {
-    gap: SPACING.xs,
-  },
-  stationName: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.text,
-  },
-  stationAddress: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-  },
-  linesContainer: {
-    flexDirection: 'row',
-    gap: SPACING.sm,
-    marginTop: SPACING.xs,
-  },
-  lineDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
   },
   center: {
     flex: 1,
