@@ -131,7 +131,7 @@ const createStyles = (COLORS: ReturnType<typeof getColors>) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: COLORS.background,
+      backgroundColor: COLORS.white,
     },
     scrollContent: {
       paddingBottom: SPACING.xl,
@@ -144,9 +144,6 @@ const createStyles = (COLORS: ReturnType<typeof getColors>) =>
     header: {
       padding: SPACING.xl,
       backgroundColor: COLORS.white,
-      marginBottom: SPACING.md,
-      borderBottomWidth: 1,
-      borderBottomColor: COLORS.lightGray,
     },
     profileHeader: {
       alignItems: 'center',
