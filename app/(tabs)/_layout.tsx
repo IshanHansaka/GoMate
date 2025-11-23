@@ -35,11 +35,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="incidents"
+        name="favourites"
         options={{
-          title: 'Incidents',
+          title: 'Favourites',
           tabBarIcon: ({ color }) => (
-            <Feather name="alert-triangle" size={24} color={color} />
+            <Feather name="heart" size={24} color={color} />
           ),
         }}
       />
@@ -60,9 +60,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="favourites"
+        name="incidents"
         options={{
-          title: 'Favourites',
+          title: 'Incidents',
           href: null,
         }}
       />

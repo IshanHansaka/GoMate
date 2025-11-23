@@ -53,11 +53,11 @@ const HomeScreen = () => {
       color: COLORS.accent,
     },
     {
-      id: 'stations',
-      title: 'Stations',
-      icon: 'map-pin',
-      route: '/(tabs)/stations',
-      color: COLORS.primary,
+      id: 'incidents',
+      title: 'Incidents',
+      icon: 'alert-triangle',
+      route: '/(tabs)/incidents',
+      color: COLORS.error,
     },
   ];
 
@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
   },
   stationsList: {
     paddingRight: SPACING.xl,
+    marginBottom: SPACING.md,
   },
 });
 

@@ -2,9 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-  ActivityIndicator,
-  FlatList,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,7 +12,6 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { apiSlice, useGetCurrentUserQuery } from '../../api/apiSlice';
-import { useGetStationsQuery } from '../../api/wmataApiSlice';
 import {
   BORDER_RADIUS,
   COLORS,
@@ -22,9 +20,6 @@ import {
   TYPOGRAPHY,
 } from '../../constants/Theme';
 import { logout, selectCurrentUser } from '../../features/auth/authSlice';
-import { RootState } from '../../store/store';
-import { StationInfo } from '../../types/wmata';
-import { getLineColor } from '../../utils/lineColors';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -33,28 +28,14 @@ const ProfileScreen = () => {
   const user = currentUser || storedUser;
 
   const router = useRouter();
-  const favouriteCodes = useSelector(
-    (state: RootState) => state.favourites.stationCodes
-  );
-  const { data, isLoading, error } = useGetStationsQuery({});
-
-  const stations: StationInfo[] = data?.Stations || [];
-
-  const favouriteStations = stations.filter((station) =>
-    favouriteCodes.includes(station.Code)
-  );
+  // Favourites moved to its own tab; remove related station fetching logic
 
   const handleLogout = () => {
     dispatch(logout());
     dispatch(apiSlice.util.resetApiState());
   };
 
-  const handleStationPress = (station: StationInfo) => {
-    router.push({
-      pathname: '/(tabs)/station/[station_code]',
-      params: { station_code: station.Code },
-    });
-  };
+  // Navigations kept minimal on profile now
 
   const renderHeader = () => (
     <View style={styles.header}>
@@ -111,60 +92,14 @@ const ProfileScreen = () => {
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
 
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>My Favourites</Text>
-      </View>
+      {/* Favourites section removed; now lives in dedicated tab */}
     </View>
   );
-
-  const renderItem = ({ item }: { item: StationInfo }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => handleStationPress(item)}
-    >
-      <View style={styles.cardContent}>
-        <Text style={styles.stationName}>{item.Name}</Text>
-        <Text style={styles.stationAddress}>
-          {item.Address?.Street}, {item.Address?.City}
-        </Text>
-        <View style={styles.linesContainer}>
-          {[item.LineCode1, item.LineCode2, item.LineCode3, item.LineCode4]
-            .filter(Boolean)
-            .map((line, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.lineDot,
-                  { backgroundColor: getLineColor(line, 'transparent') },
-                ]}
-              />
-            ))}
-        </View>
-      </View>
-      <Ionicons name="chevron-forward" size={20} color={COLORS.lightGray} />
-    </TouchableOpacity>
-  );
-
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
-      <FlatList
-        data={favouriteStations}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.Code}
-        ListHeaderComponent={renderHeader}
-        ListEmptyComponent={
-          isLoading ? (
-            <ActivityIndicator
-              size="large"
-              color={COLORS.primary}
-              style={{ marginTop: 20 }}
-            />
-          ) : (
-            <Text style={styles.emptyText}>No favourite stations yet.</Text>
-          )
-        }
-        contentContainerStyle={styles.listContent}
-      />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {renderHeader()}
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -174,7 +109,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  listContent: {
+  scrollContent: {
     paddingBottom: SPACING.xl,
   },
   header: {
@@ -255,53 +190,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: SPACING.sm,
   },
-  sectionHeader: {
-    marginTop: SPACING.md,
-  },
-  sectionTitle: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.text,
-  },
-  card: {
-    backgroundColor: COLORS.white,
-    padding: SPACING.lg,
-    marginHorizontal: SPACING.xl,
-    marginBottom: SPACING.md,
-    borderRadius: BORDER_RADIUS.lg,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    ...SHADOWS.light,
-  },
-  cardContent: {
-    flex: 1,
-  },
-  stationName: {
-    ...TYPOGRAPHY.body,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: SPACING.xs,
-  },
-  stationAddress: {
-    ...TYPOGRAPHY.small,
-    color: COLORS.mediumGray,
-    marginBottom: SPACING.sm,
-  },
-  linesContainer: {
-    flexDirection: 'row',
-    gap: SPACING.xs,
-  },
-  lineDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: COLORS.mediumGray,
-    marginTop: SPACING.xl,
-    fontStyle: 'italic',
-  },
+  // Removed favourites list styles
 });
 
 export default ProfileScreen;
