@@ -11,9 +11,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useGetStationEntrancesQuery } from '../../api/wmataApiSlice';
-import { getStationName } from '../../constants/StationNames';
-import { StationEntrance } from '../../types/wmata';
+import { useGetStationsQuery } from '../../api/wmataApiSlice';
+import StationListCard from '../../components/StationListCard';
+import { StationInfo } from '../../types/wmata';
+import { getDistanceFromLatLonInKm } from '../../utils/geo';
 
 export default function NearbyScreen() {
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -67,25 +68,38 @@ export default function NearbyScreen() {
     }
   };
 
-  const { data, isLoading, error, refetch } = useGetStationEntrancesQuery(
-    searchParams || { lat: 0, lon: 0, radius: 0 },
-    { skip: !searchParams }
-  );
+  const { data, isLoading, error, refetch } = useGetStationsQuery({});
 
-  const entrances: StationEntrance[] = data?.Entrances || [];
+  const stations: StationInfo[] = data?.Stations || [];
 
-  // Filter unique stations based on StationCode1
-  const uniqueStations = entrances.reduce((acc, current) => {
-    const x = acc.find((item) => item.StationCode1 === current.StationCode1);
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
-  }, [] as StationEntrance[]);
+  const filteredStations = React.useMemo(() => {
+    if (!searchParams) return [];
 
-  const handleStationPress = (stationCode: string) => {
-    router.push(`/station/${stationCode}`);
+    const { lat, lon, radius } = searchParams;
+    const radiusKm = radius / 1000;
+
+    return stations
+      .filter((station) => {
+        const dist = getDistanceFromLatLonInKm(
+          lat,
+          lon,
+          station.Lat,
+          station.Lon
+        );
+        return dist <= radiusKm;
+      })
+      .sort((a, b) => {
+        const distA = getDistanceFromLatLonInKm(lat, lon, a.Lat, a.Lon);
+        const distB = getDistanceFromLatLonInKm(lat, lon, b.Lat, b.Lon);
+        return distA - distB;
+      });
+  }, [stations, searchParams]);
+
+  const handleStationPress = (station: StationInfo) => {
+    router.push({
+      pathname: '/(tabs)/station/[station_code]',
+      params: { station_code: station.Code },
+    });
   };
 
   if (errorMsg) {
@@ -222,26 +236,10 @@ export default function NearbyScreen() {
         </View>
       ) : (
         <FlatList
-          data={uniqueStations}
-          keyExtractor={(item) => item.ID}
+          data={filteredStations}
+          keyExtractor={(item) => item.Code}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.card}
-              onPress={() => handleStationPress(item.StationCode1)}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconContainer}>
-                  <Ionicons name="train-outline" size={24} color="#007BFF" />
-                </View>
-                <View style={styles.textContainer}>
-                  <Text style={styles.stationName}>
-                    {getStationName(item.StationCode1)}
-                  </Text>
-                  <Text style={styles.distance}>{item.Description}</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#ccc" />
-              </View>
-            </TouchableOpacity>
+            <StationListCard station={item} onPress={handleStationPress} />
           )}
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
@@ -289,43 +287,7 @@ const styles = StyleSheet.create({
   listContent: {
     padding: 16,
   },
-  card: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    marginBottom: 12,
-    padding: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#e6f2ff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  stationName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 2,
-  },
-  distance: {
-    fontSize: 12,
-    color: '#666',
-  },
+
   loadingText: {
     marginTop: 12,
     fontSize: 16,
