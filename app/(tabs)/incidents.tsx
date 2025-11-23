@@ -13,30 +13,12 @@ import {
 import { useGetRailIncidentsQuery } from '../../api/wmataApiSlice';
 import { LINE_NAMES } from '../../constants/LineNames';
 import { RailIncident } from '../../types/wmata';
+import { getLineColor } from '../../utils/lineColors';
 
 export default function IncidentsScreen() {
   const { data, isLoading, error, refetch } = useGetRailIncidentsQuery({});
 
   const incidents: RailIncident[] = data?.Incidents || [];
-
-  const getLineColor = (lineCode: string) => {
-    switch (lineCode) {
-      case 'RD':
-        return '#D11241';
-      case 'BL':
-        return '#0072CE';
-      case 'YL':
-        return '#FFD100';
-      case 'OR':
-        return '#D45D00';
-      case 'GR':
-        return '#00B140';
-      case 'SV':
-        return '#919D9D';
-      default:
-        return '#666';
-    }
-  };
 
   const getDisplayName = (code: string) => {
     if (LINE_NAMES[code]) {
@@ -62,7 +44,7 @@ export default function IncidentsScreen() {
                   key={`${line}-${index}`}
                   style={[
                     styles.lineBadge,
-                    { backgroundColor: getLineColor(line) },
+                    { backgroundColor: getLineColor(line, '#666') },
                   ]}
                 >
                   <Text style={styles.lineText}>{getDisplayName(line)}</Text>

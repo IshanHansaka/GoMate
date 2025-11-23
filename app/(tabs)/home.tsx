@@ -1,4 +1,4 @@
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
+import StationCard from '../../components/StationCard';
 import {
   BORDER_RADIUS,
   COLORS,
@@ -28,25 +29,6 @@ const HomeScreen = () => {
   const user = useSelector(selectCurrentUser);
   const { data, isLoading, error } = useGetStationsQuery({});
   const stations: StationInfo[] = data?.Stations?.slice(0, 5) || [];
-
-  const getLineColor = (lineCode: string | null) => {
-    switch (lineCode) {
-      case 'RD':
-        return '#D11241';
-      case 'BL':
-        return '#0072CE';
-      case 'YL':
-        return '#FFD100';
-      case 'OR':
-        return '#D45D00';
-      case 'GR':
-        return '#00B140';
-      case 'SV':
-        return '#919D9D';
-      default:
-        return '#eee';
-    }
-  };
 
   const shortcuts = [
     {
@@ -78,43 +60,6 @@ const HomeScreen = () => {
       color: COLORS.primary,
     },
   ];
-
-  const renderStationCard = ({ item }: { item: StationInfo }) => (
-    <TouchableOpacity
-      style={styles.stationCard}
-      onPress={() =>
-        router.push({
-          pathname: '/(tabs)/station/[station_code]',
-          params: { station_code: item.Code },
-        })
-      }
-    >
-      <View style={styles.stationHeader}>
-        <View style={styles.iconContainer}>
-          <Ionicons name="train-outline" size={24} color={COLORS.text} />
-        </View>
-        <View style={styles.linesRow}>
-          {[item.LineCode1, item.LineCode2, item.LineCode3, item.LineCode4]
-            .filter(Boolean)
-            .map((line, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.lineDot,
-                  { backgroundColor: getLineColor(line) },
-                ]}
-              />
-            ))}
-        </View>
-      </View>
-      <Text style={styles.stationName} numberOfLines={1}>
-        {item.Name}
-      </Text>
-      <Text style={styles.stationAddress} numberOfLines={1}>
-        {item.Address?.City}, {item.Address?.State}
-      </Text>
-    </TouchableOpacity>
-  );
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
@@ -178,7 +123,7 @@ const HomeScreen = () => {
           ) : (
             <FlatList
               data={stations}
-              renderItem={renderStationCard}
+              renderItem={({ item }) => <StationCard item={item} />}
               keyExtractor={(item) => item.Code}
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -282,47 +227,6 @@ const styles = StyleSheet.create({
   },
   stationsList: {
     paddingRight: SPACING.xl,
-  },
-  stationCard: {
-    backgroundColor: COLORS.white,
-    width: 160,
-    padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.xl,
-    marginRight: SPACING.lg,
-    ...SHADOWS.medium,
-  },
-  stationHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: SPACING.md,
-  },
-  iconContainer: {
-    backgroundColor: COLORS.lightGray,
-    padding: SPACING.sm,
-    borderRadius: BORDER_RADIUS.md,
-  },
-  linesRow: {
-    flexDirection: 'row',
-    gap: SPACING.xs,
-    flexWrap: 'wrap',
-    maxWidth: 60,
-    justifyContent: 'flex-end',
-  },
-  lineDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  stationName: {
-    ...TYPOGRAPHY.body,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: SPACING.xs,
-  },
-  stationAddress: {
-    ...TYPOGRAPHY.small,
-    color: COLORS.mediumGray,
   },
 });
 

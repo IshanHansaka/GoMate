@@ -21,6 +21,7 @@ import {
   TYPOGRAPHY,
 } from '../../constants/Theme';
 import { StationInfo } from '../../types/wmata';
+import { getLineColor } from '../../utils/lineColors';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -55,25 +56,6 @@ export default function HomeScreen() {
     });
   };
 
-  const getLineColor = (lineCode: string | null) => {
-    switch (lineCode) {
-      case 'RD':
-        return '#D11241';
-      case 'BL':
-        return '#0072CE';
-      case 'YL':
-        return '#FFD100';
-      case 'OR':
-        return '#D45D00';
-      case 'GR':
-        return '#00B140';
-      case 'SV':
-        return '#919D9D';
-      default:
-        return 'transparent';
-    }
-  };
-
   const renderItem = ({ item }: { item: StationInfo }) => (
     <TouchableOpacity
       style={styles.card}
@@ -92,7 +74,7 @@ export default function HomeScreen() {
                 key={index}
                 style={[
                   styles.lineDot,
-                  { backgroundColor: getLineColor(line) },
+                  { backgroundColor: getLineColor(line, 'transparent') },
                 ]}
               />
             ))}

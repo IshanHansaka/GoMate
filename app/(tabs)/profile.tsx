@@ -24,6 +24,7 @@ import {
 import { logout, selectCurrentUser } from '../../features/auth/authSlice';
 import { RootState } from '../../store/store';
 import { StationInfo } from '../../types/wmata';
+import { getLineColor } from '../../utils/lineColors';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -53,25 +54,6 @@ const ProfileScreen = () => {
       pathname: '/(tabs)/station/[station_code]',
       params: { station_code: station.Code },
     });
-  };
-
-  const getLineColor = (lineCode: string | null) => {
-    switch (lineCode) {
-      case 'RD':
-        return '#D11241';
-      case 'BL':
-        return '#0072CE';
-      case 'YL':
-        return '#FFD100';
-      case 'OR':
-        return '#D45D00';
-      case 'GR':
-        return '#00B140';
-      case 'SV':
-        return '#919D9D';
-      default:
-        return 'transparent';
-    }
   };
 
   const renderHeader = () => (
@@ -153,7 +135,7 @@ const ProfileScreen = () => {
                 key={index}
                 style={[
                   styles.lineDot,
-                  { backgroundColor: getLineColor(line) },
+                  { backgroundColor: getLineColor(line, 'transparent') },
                 ]}
               />
             ))}
