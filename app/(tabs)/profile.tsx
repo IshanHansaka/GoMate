@@ -25,7 +25,8 @@ import { logout, selectCurrentUser } from '../../features/auth/authSlice';
 const ProfileScreen = () => {
   const dispatch = useDispatch();
   const storedUser = useSelector(selectCurrentUser);
-  const { data: currentUser, isLoading: userLoading } = useGetCurrentUserQuery();
+  const { data: currentUser, isLoading: userLoading } =
+    useGetCurrentUserQuery();
   const user = currentUser || storedUser;
 
   const router = useRouter();
