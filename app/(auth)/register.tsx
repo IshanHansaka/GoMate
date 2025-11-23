@@ -1,9 +1,10 @@
 import { Feather } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -42,6 +43,8 @@ const RegisterScreen = () => {
   const COLORS = getColors(isDark);
   const styles = createStyles(COLORS);
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -56,13 +59,17 @@ const RegisterScreen = () => {
     },
   });
 
-  // 3. Create a submit handler
-  const onSubmit = (data: any) => {
-    console.log('Register Data:', data);
-    // TODO:
-    // 1. Call the dummyjson API
-    // 2. On success, save token
-    // 3. Navigate to home
+  const onSubmit = async (data: any) => {
+    setIsSubmitting(true);
+    try {
+      console.log('Register Data:', data);
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API call
+      router.push('/(auth)/login');
+    } catch (error) {
+      console.error('Registration failed:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -205,10 +212,18 @@ const RegisterScreen = () => {
             </View>
 
             <TouchableOpacity
-              style={styles.button}
+              style={[
+                styles.button,
+                isSubmitting && { backgroundColor: COLORS.primary },
+              ]}
               onPress={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
             >
-              <Text style={styles.buttonText}>Create Account</Text>
+              {isSubmitting ? (
+                <ActivityIndicator size="small" color="#ffffff" />
+              ) : (
+                <Text style={styles.buttonText}>Create Account</Text>
+              )}
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -308,7 +323,7 @@ const createStyles = (COLORS: ReturnType<typeof getColors>) =>
     buttonText: {
       ...TYPOGRAPHY.body,
       fontWeight: '700',
-      color: COLORS.white,
+      color: '#ffffff',
     },
     linkButton: {
       marginTop: SPACING.lg,

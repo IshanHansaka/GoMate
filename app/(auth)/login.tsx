@@ -192,7 +192,7 @@ const LoginScreen = () => {
               disabled={isLoading}
             >
               {isLoading ? (
-                <ActivityIndicator color={COLORS.white} />
+                <ActivityIndicator color='#ffffff' />
               ) : (
                 <Text style={styles.buttonText}>Login</Text>
               )}

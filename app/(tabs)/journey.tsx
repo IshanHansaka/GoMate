@@ -170,7 +170,6 @@ export default function JourneyScreen() {
 
       {isLoading && (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.loadingText}>Calculating trip...</Text>
         </View>
       )}
