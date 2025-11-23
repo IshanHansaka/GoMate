@@ -33,23 +33,26 @@ export default function NearbyScreen() {
   const [isManualMode, setIsManualMode] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setErrorMsg('Permission to access location was denied');
-          return;
-        }
-
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
-      } catch (error) {
-        setErrorMsg(
-          'Location request failed due to unsatisfied device settings.'
-        );
+  const getLocation = async () => {
+    setErrorMsg(null);
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
       }
-    })();
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    } catch (error) {
+      setErrorMsg(
+        'Location request failed due to unsatisfied device settings.'
+      );
+    }
+  };
+
+  useEffect(() => {
+    getLocation();
   }, []);
 
   const handleSearch = () => {
@@ -188,7 +191,12 @@ export default function NearbyScreen() {
 
         <TouchableOpacity
           style={styles.manualModeButton}
-          onPress={() => setIsManualMode(!isManualMode)}
+          onPress={() => {
+            if (isManualMode) {
+              getLocation();
+            }
+            setIsManualMode(!isManualMode);
+          }}
         >
           <Text style={styles.manualModeText}>
             {isManualMode ? 'Use GPS Location' : 'Use Manual Location'}
