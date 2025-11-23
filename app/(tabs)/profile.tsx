@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   StyleSheet,
@@ -24,7 +25,7 @@ import { logout, selectCurrentUser } from '../../features/auth/authSlice';
 const ProfileScreen = () => {
   const dispatch = useDispatch();
   const storedUser = useSelector(selectCurrentUser);
-  const { data: currentUser } = useGetCurrentUserQuery();
+  const { data: currentUser, isLoading: userLoading } = useGetCurrentUserQuery();
   const user = currentUser || storedUser;
 
   const router = useRouter();
@@ -97,9 +98,15 @@ const ProfileScreen = () => {
   );
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {renderHeader()}
-      </ScrollView>
+      {userLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {renderHeader()}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
@@ -111,6 +118,11 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: SPACING.xl,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     padding: SPACING.xl,
