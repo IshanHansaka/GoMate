@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
 import { LINE_NAMES } from '../../constants/LineNames';
 import {
@@ -84,7 +84,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <View style={styles.header}>
         <Text style={styles.title}>Find a Station</Text>
         <TextInput

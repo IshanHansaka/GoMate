@@ -5,11 +5,11 @@ import {
   FlatList,
   Linking,
   RefreshControl,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGetRailIncidentsQuery } from '../../api/wmataApiSlice';
 import { LINE_NAMES } from '../../constants/LineNames';
 import { RailIncident } from '../../types/wmata';
@@ -110,7 +110,7 @@ export default function IncidentsScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <FlatList
         data={incidents}
         keyExtractor={(item, index) => `${item.IncidentID}-${index}`}

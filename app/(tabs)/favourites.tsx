@@ -3,12 +3,12 @@ import React from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
 import { RootState } from '../../store/store';
@@ -97,7 +97,7 @@ export default function FavouritesScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <View style={styles.header}>
         <Text style={styles.title}>My Favourites</Text>
       </View>
