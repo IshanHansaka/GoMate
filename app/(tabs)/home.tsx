@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -59,21 +59,21 @@ const HomeScreen = () => {
     {
       id: 'lines',
       title: 'Lines',
-      icon: 'git-network',
+      icon: 'git-commit',
       route: '/(tabs)/lines',
       color: COLORS.secondary,
     },
     {
       id: 'nearby',
       title: 'Nearby',
-      icon: 'location',
+      icon: 'compass',
       route: '/(tabs)/nearby',
       color: COLORS.accent,
     },
     {
       id: 'stations',
       title: 'Stations',
-      icon: 'train',
+      icon: 'map-pin',
       route: '/(tabs)/stations',
       color: COLORS.primary,
     },
@@ -91,7 +91,7 @@ const HomeScreen = () => {
     >
       <View style={styles.stationHeader}>
         <View style={styles.iconContainer}>
-          <Ionicons name="train-outline" size={24} color={COLORS.text} />
+          <Ionicons name="train-outline" size={24} color={COLORS.text} />{' '}
         </View>
         <View style={styles.linesRow}>
           {[item.LineCode1, item.LineCode2, item.LineCode3, item.LineCode4]
@@ -134,7 +134,7 @@ const HomeScreen = () => {
           style={styles.searchBar}
           onPress={() => router.push('/(tabs)/stations')}
         >
-          <Ionicons name="search" size={20} color={COLORS.mediumGray} />
+          <Feather name="search" size={20} color={COLORS.mediumGray} />
           <Text style={styles.searchText}>Search for a station...</Text>
         </TouchableOpacity>
 
@@ -153,11 +153,7 @@ const HomeScreen = () => {
                   { backgroundColor: item.color + '20' },
                 ]}
               >
-                <Ionicons
-                  name={item.icon as any}
-                  size={24}
-                  color={item.color}
-                />
+                <Feather name={item.icon as any} size={24} color={item.color} />
               </View>
               <Text style={styles.shortcutTitle}>{item.title}</Text>
             </TouchableOpacity>
