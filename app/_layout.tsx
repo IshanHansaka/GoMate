@@ -14,7 +14,10 @@ import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import LoadingScreen from '@/components/LoadingScreen'; // optional spinner component
-import { useColorScheme } from '@/components/useColorScheme';
+import {
+  ThemeProvider as AppThemeProvider,
+  useTheme,
+} from '../context/ThemeContext';
 import { selectIsAuthenticated } from '../features/auth/authSlice';
 import { persistor, store } from '../store/store';
 
@@ -43,7 +46,9 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <PersistGate loading={<LoadingScreen />} persistor={persistor}>
-        <RootLayoutNav />
+        <AppThemeProvider>
+          <RootLayoutNav />
+        </AppThemeProvider>
       </PersistGate>
     </Provider>
   );
@@ -51,7 +56,7 @@ export default function RootLayout() {
 
 // Component inside Redux Provider
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  const { isDark } = useTheme();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const segments = useSegments();
   const router = useRouter();
@@ -60,7 +65,7 @@ function RootLayoutNav() {
   useAuthRedirect(isAuthenticated, segments, router);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />

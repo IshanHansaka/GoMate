@@ -11,15 +11,19 @@ import { useGetLinesQuery } from '../../api/wmataApiSlice';
 import { getStationName } from '../../constants/StationNames';
 import {
   BORDER_RADIUS,
-  COLORS,
   SHADOWS,
   SPACING,
   TYPOGRAPHY,
+  getColors,
 } from '../../constants/Theme';
+import { useTheme } from '../../context/ThemeContext';
 import { Line } from '../../types/wmata';
 import { getLineColor } from '../../utils/lineColors';
 
 export default function LinesScreen() {
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
   const { data, isLoading, error } = useGetLinesQuery({});
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -94,78 +98,79 @@ export default function LinesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: SPACING.xl,
-  },
-  loadingText: {
-    marginTop: SPACING.md,
-    ...TYPOGRAPHY.body,
-    color: COLORS.mediumGray,
-  },
-  errorText: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.error,
-  },
-  listContent: {
-    padding: SPACING.lg,
-  },
-  card: {
-    backgroundColor: COLORS.white,
-    borderRadius: BORDER_RADIUS.lg,
-    marginBottom: SPACING.md,
-    flexDirection: 'row',
-    overflow: 'hidden',
-    ...SHADOWS.light,
-  },
-  lineIndicator: {
-    width: 6,
-  },
-  cardContent: {
-    flex: 1,
-    padding: SPACING.lg,
-  },
-  lineName: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.text,
-    marginBottom: SPACING.xs,
-  },
-  stationsContainer: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginTop: SPACING.sm,
-  },
-  stationText: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-    marginBottom: SPACING.xs,
-  },
-  descriptionContainer: {
-    padding: SPACING.lg,
-    backgroundColor: COLORS.white,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
-  },
-  descriptionTitle: {
-    ...TYPOGRAPHY.h3,
-    color: COLORS.text,
-    marginBottom: SPACING.sm,
-  },
-  descriptionText: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-    marginBottom: SPACING.xs,
-  },
-  mapImage: {
-    width: '100%',
-    height: 450,
-    marginVertical: SPACING.lg,
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: COLORS.background,
+    },
+    center: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: SPACING.xl,
+    },
+    loadingText: {
+      marginTop: SPACING.md,
+      ...TYPOGRAPHY.body,
+      color: COLORS.mediumGray,
+    },
+    errorText: {
+      ...TYPOGRAPHY.body,
+      color: COLORS.error,
+    },
+    listContent: {
+      padding: SPACING.lg,
+    },
+    card: {
+      backgroundColor: COLORS.white,
+      borderRadius: BORDER_RADIUS.lg,
+      marginBottom: SPACING.md,
+      flexDirection: 'row',
+      overflow: 'hidden',
+      ...SHADOWS.light,
+    },
+    lineIndicator: {
+      width: 6,
+    },
+    cardContent: {
+      flex: 1,
+      padding: SPACING.lg,
+    },
+    lineName: {
+      ...TYPOGRAPHY.h4,
+      color: COLORS.text,
+      marginBottom: SPACING.xs,
+    },
+    stationsContainer: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      marginTop: SPACING.sm,
+    },
+    stationText: {
+      ...TYPOGRAPHY.caption,
+      color: COLORS.mediumGray,
+      marginBottom: SPACING.xs,
+    },
+    descriptionContainer: {
+      padding: SPACING.lg,
+      backgroundColor: COLORS.white,
+      borderBottomWidth: 1,
+      borderBottomColor: COLORS.lightGray,
+    },
+    descriptionTitle: {
+      ...TYPOGRAPHY.h3,
+      color: COLORS.text,
+      marginBottom: SPACING.sm,
+    },
+    descriptionText: {
+      ...TYPOGRAPHY.caption,
+      color: COLORS.mediumGray,
+      marginBottom: SPACING.xs,
+    },
+    mapImage: {
+      width: '100%',
+      height: 450,
+      marginVertical: SPACING.lg,
+    },
+  });

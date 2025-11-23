@@ -3,11 +3,12 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   BORDER_RADIUS,
-  COLORS,
   SHADOWS,
   SPACING,
   TYPOGRAPHY,
+  getColors,
 } from '../constants/Theme';
+import { useTheme } from '../context/ThemeContext';
 import { StationInfo } from '../types/wmata';
 import { getLineColor } from '../utils/lineColors';
 
@@ -20,6 +21,10 @@ const StationListCard: React.FC<StationListCardProps> = ({
   station,
   onPress,
 }) => {
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
+
   return (
     <TouchableOpacity style={styles.card} onPress={() => onPress(station)}>
       <View style={styles.cardContent}>
@@ -53,41 +58,42 @@ const StationListCard: React.FC<StationListCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: COLORS.white,
-    borderRadius: BORDER_RADIUS.lg,
-    padding: SPACING.lg,
-    marginBottom: SPACING.md,
-    ...SHADOWS.light,
-  },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  infoContainer: {
-    flex: 1,
-    gap: SPACING.xs,
-  },
-  stationName: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.text,
-  },
-  stationAddress: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-  },
-  linesContainer: {
-    flexDirection: 'row',
-    gap: SPACING.sm,
-    marginTop: SPACING.xs,
-  },
-  lineDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    card: {
+      backgroundColor: COLORS.white,
+      borderRadius: BORDER_RADIUS.lg,
+      padding: SPACING.lg,
+      marginBottom: SPACING.md,
+      ...SHADOWS.light,
+    },
+    cardContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    infoContainer: {
+      flex: 1,
+      gap: SPACING.xs,
+    },
+    stationName: {
+      ...TYPOGRAPHY.h4,
+      color: COLORS.text,
+    },
+    stationAddress: {
+      ...TYPOGRAPHY.caption,
+      color: COLORS.mediumGray,
+    },
+    linesContainer: {
+      flexDirection: 'row',
+      gap: SPACING.sm,
+      marginTop: SPACING.xs,
+    },
+    lineDot: {
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+    },
+  });
 
 export default StationListCard;

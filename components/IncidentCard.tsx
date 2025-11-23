@@ -2,6 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Linking, StyleSheet, Text, View } from 'react-native';
 import { LINE_NAMES } from '../constants/LineNames';
+import { getColors } from '../constants/Theme';
+import { useTheme } from '../context/ThemeContext';
 import { RailIncident } from '../types/wmata';
 import { getLineColor } from '../utils/lineColors';
 
@@ -10,6 +12,10 @@ interface IncidentCardProps {
 }
 
 const IncidentCard: React.FC<IncidentCardProps> = ({ incident }) => {
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
+
   const getDisplayName = (code: string) => {
     if (LINE_NAMES[code]) {
       return LINE_NAMES[code];
@@ -74,7 +80,7 @@ const IncidentCard: React.FC<IncidentCardProps> = ({ incident }) => {
       ))}
 
       <View style={styles.footer}>
-        <Ionicons name="time-outline" size={14} color="#666" />
+        <Ionicons name="time-outline" size={14} color={COLORS.mediumGray} />
         <Text style={styles.dateText}>
           Updated: {new Date(incident.DateUpdated).toLocaleString()}
         </Text>
@@ -83,75 +89,76 @@ const IncidentCard: React.FC<IncidentCardProps> = ({ incident }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  linesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    flex: 1,
-  },
-  lineBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  lineText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  typeBadge: {
-    backgroundColor: '#FFF3CD',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#FFEEBA',
-  },
-  typeText: {
-    color: '#856404',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  description: {
-    fontSize: 16,
-    color: '#333',
-    lineHeight: 22,
-    marginBottom: 12,
-  },
-  link: {
-    color: '#007AFF',
-    textDecorationLine: 'underline',
-  },
-  footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-    paddingTop: 12,
-  },
-  dateText: {
-    fontSize: 12,
-    color: '#666',
-    marginLeft: 6,
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    card: {
+      backgroundColor: COLORS.white,
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 16,
+      elevation: 2,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+    },
+    cardHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 12,
+    },
+    linesContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 6,
+      flex: 1,
+    },
+    lineBadge: {
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 4,
+    },
+    lineText: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 12,
+    },
+    typeBadge: {
+      backgroundColor: COLORS.accent + '30',
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: COLORS.accent + '50',
+    },
+    typeText: {
+      color: COLORS.accent,
+      fontSize: 12,
+      fontWeight: '600',
+    },
+    description: {
+      fontSize: 16,
+      color: COLORS.text,
+      lineHeight: 22,
+      marginBottom: 12,
+    },
+    link: {
+      color: COLORS.primary,
+      textDecorationLine: 'underline',
+    },
+    footer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderTopWidth: 1,
+      borderTopColor: COLORS.border,
+      paddingTop: 12,
+    },
+    dateText: {
+      fontSize: 12,
+      color: COLORS.mediumGray,
+      marginLeft: 6,
+    },
+  });
 
 export default IncidentCard;

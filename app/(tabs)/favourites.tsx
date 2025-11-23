@@ -11,10 +11,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
 import StationListCard from '../../components/StationListCard';
+import { getColors } from '../../constants/Theme';
+import { useTheme } from '../../context/ThemeContext';
 import { RootState } from '../../store/store';
 import { StationInfo } from '../../types/wmata';
 
 export default function FavouritesScreen() {
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
   const router = useRouter();
   const favouriteCodes = useSelector(
     (state: RootState & { favourites: { stationCodes: string[] } }) =>
@@ -42,7 +47,7 @@ export default function FavouritesScreen() {
   if (isLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#007BFF" />
+        <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
@@ -76,37 +81,38 @@ export default function FavouritesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    padding: 20,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  listContent: {
-    padding: 15,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 16,
-  },
-  emptyText: {
-    color: '#888',
-    fontSize: 16,
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: COLORS.background,
+    },
+    header: {
+      padding: 20,
+      backgroundColor: COLORS.white,
+      borderBottomWidth: 1,
+      borderBottomColor: COLORS.lightGray,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: COLORS.text,
+    },
+    listContent: {
+      padding: 15,
+    },
+    center: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    errorText: {
+      color: COLORS.error,
+      fontSize: 16,
+    },
+    emptyText: {
+      color: COLORS.mediumGray,
+      fontSize: 16,
+    },
+  });

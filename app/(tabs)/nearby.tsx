@@ -13,10 +13,15 @@ import {
 } from 'react-native';
 import { useGetStationsQuery } from '../../api/wmataApiSlice';
 import StationListCard from '../../components/StationListCard';
+import { getColors } from '../../constants/Theme';
+import { useTheme } from '../../context/ThemeContext';
 import { StationInfo } from '../../types/wmata';
 import { getDistanceFromLatLonInKm } from '../../utils/geo';
 
 export default function NearbyScreen() {
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null
   );
@@ -265,113 +270,113 @@ export default function NearbyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  header: {
-    padding: 20,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-  },
-  listContent: {
-    padding: 16,
-  },
-
-  loadingText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: '#666',
-  },
-  errorText: {
-    fontSize: 16,
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subErrorText: {
-    fontSize: 14,
-    color: '#ff0000ff',
-    textAlign: 'center',
-  },
-  retryButton: {
-    marginTop: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#007BFF',
-    borderRadius: 8,
-  },
-  retryText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#666',
-    fontStyle: 'italic',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    marginTop: 12,
-    gap: 10,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 16,
-    color: '#333',
-  },
-  searchButton: {
-    backgroundColor: '#007BFF',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  searchButtonText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  manualModeButton: {
-    marginTop: 12,
-    alignSelf: 'flex-start',
-  },
-  manualModeText: {
-    color: '#007BFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  manualInputContainer: {
-    flexDirection: 'row',
-    marginTop: 8,
-    gap: 10,
-  },
-  manualHint: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-    fontStyle: 'italic',
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: COLORS.background,
+    },
+    center: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    header: {
+      padding: 20,
+      backgroundColor: COLORS.white,
+      borderBottomWidth: 1,
+      borderBottomColor: COLORS.lightGray,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: COLORS.text,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: COLORS.mediumGray,
+      marginTop: 4,
+    },
+    listContent: {
+      padding: 16,
+    },
+    loadingText: {
+      marginTop: 12,
+      fontSize: 16,
+      color: COLORS.mediumGray,
+    },
+    errorText: {
+      fontSize: 16,
+      color: COLORS.error,
+      textAlign: 'center',
+      marginBottom: 8,
+    },
+    subErrorText: {
+      fontSize: 14,
+      color: COLORS.error,
+      textAlign: 'center',
+    },
+    retryButton: {
+      marginTop: 16,
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      backgroundColor: COLORS.primary,
+      borderRadius: 8,
+    },
+    retryText: {
+      color: 'white',
+      fontWeight: '600',
+    },
+    emptyText: {
+      fontSize: 16,
+      color: COLORS.mediumGray,
+      fontStyle: 'italic',
+    },
+    searchContainer: {
+      flexDirection: 'row',
+      marginTop: 12,
+      gap: 10,
+    },
+    input: {
+      flex: 1,
+      backgroundColor: COLORS.lightGray,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      fontSize: 16,
+      color: COLORS.text,
+    },
+    searchButton: {
+      backgroundColor: COLORS.primary,
+      borderRadius: 8,
+      paddingHorizontal: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    searchButtonText: {
+      color: 'white',
+      fontWeight: '600',
+      fontSize: 16,
+    },
+    manualModeButton: {
+      marginTop: 12,
+      alignSelf: 'flex-start',
+    },
+    manualModeText: {
+      color: COLORS.primary,
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    manualInputContainer: {
+      flexDirection: 'row',
+      marginTop: 8,
+      gap: 10,
+    },
+    manualHint: {
+      fontSize: 12,
+      color: COLORS.mediumGray,
+      marginTop: 4,
+      fontStyle: 'italic',
+    },
+  });

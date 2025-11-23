@@ -1,4 +1,4 @@
-// App Theme Color Palette
+// App Theme Color Palette - Light Mode
 export const COLORS = {
   primary: '#0052CC', // Transit Blue (Primary)
   secondary: '#2684FF', // Light Blue
@@ -10,6 +10,8 @@ export const COLORS = {
   mediumGray: '#8B9199',
   error: '#DE350B',
   success: '#00875A',
+  inputBackground: '#FFFFFF',
+  border: '#E8EBED',
 
   // Line Colors (Transit specific)
   lineRed: '#D11241',
@@ -19,6 +21,33 @@ export const COLORS = {
   lineGreen: '#00B140',
   lineSilver: '#919D9D',
 };
+
+// Dark Mode Colors
+export const DARK_COLORS = {
+  primary: '#4C9AFF', // Lighter blue for dark mode
+  secondary: '#6DAAFF', // Light Blue
+  background: '#1A1D23', // Dark background
+  text: '#E8EAED', // Light text
+  accent: '#FFC400', // Brighter amber for dark mode
+  white: '#2C2F36', // Dark card background
+  lightGray: '#2C2F36', // Dark card background
+  mediumGray: '#9AA0A6', // Medium gray text
+  error: '#FF6B6B',
+  success: '#51CF66',
+  inputBackground: '#2C2F36',
+  border: '#3E424A',
+
+  // Line Colors remain the same
+  lineRed: '#D11241',
+  lineBlue: '#0072CE',
+  lineYellow: '#FFD100',
+  lineOrange: '#D45D00',
+  lineGreen: '#00B140',
+  lineSilver: '#919D9D',
+};
+
+// Helper function to get colors based on theme
+export const getColors = (isDark: boolean) => (isDark ? DARK_COLORS : COLORS);
 
 export const SPACING = {
   xs: 4,

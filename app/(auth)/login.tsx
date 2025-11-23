@@ -23,11 +23,12 @@ import * as yup from 'yup';
 import { useLoginMutation } from '../../api/apiSlice';
 import {
   BORDER_RADIUS,
-  COLORS,
   SHADOWS,
   SPACING,
   TYPOGRAPHY,
+  getColors,
 } from '../../constants/Theme';
+import { useTheme } from '../../context/ThemeContext';
 import { setCredentials } from '../../features/auth/authSlice';
 
 const schema = yup.object().shape({
@@ -39,6 +40,10 @@ const schema = yup.object().shape({
 });
 
 const LoginScreen = () => {
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
+
   const {
     control,
     handleSubmit,
@@ -209,112 +214,103 @@ const LoginScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: SPACING.xl,
-  },
-  hero: {
-    alignItems: 'center',
-    marginBottom: SPACING.xxl,
-  },
-  iconContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: COLORS.primary + '20',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: SPACING.lg,
-    ...SHADOWS.medium,
-  },
-  title: {
-    ...TYPOGRAPHY.h1,
-    color: COLORS.text,
-    marginBottom: SPACING.xs,
-  },
-  subtitle: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.mediumGray,
-    textAlign: 'center',
-  },
-  form: {
-    backgroundColor: COLORS.white,
-    padding: SPACING.xl,
-    borderRadius: BORDER_RADIUS.xl,
-    width: '100%',
-    maxWidth: 420,
-    ...SHADOWS.medium,
-  },
-  inputGroup: {
-    marginBottom: SPACING.lg,
-  },
-  label: {
-    ...TYPOGRAPHY.body,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: SPACING.sm,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.lightGray,
-    borderRadius: BORDER_RADIUS.md,
-    borderWidth: 1,
-    borderColor: COLORS.lightGray,
-  },
-  inputIcon: {
-    marginHorizontal: SPACING.md,
-  },
-  input: {
-    flex: 1,
-    height: 50,
-    ...TYPOGRAPHY.body,
-    color: COLORS.text,
-  },
-  error: {
-    ...TYPOGRAPHY.small,
-    color: COLORS.error,
-    marginTop: SPACING.xs,
-  },
-  button: {
-    backgroundColor: COLORS.primary,
-    height: 50,
-    borderRadius: BORDER_RADIUS.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: SPACING.md,
-    ...SHADOWS.light,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    ...TYPOGRAPHY.body,
-    fontWeight: '700',
-    color: COLORS.white,
-  },
-  linkButton: {
-    marginTop: SPACING.lg,
-    alignItems: 'center',
-  },
-  linkText: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.mediumGray,
-  },
-  linkTextBold: {
-    color: COLORS.primary,
-    fontWeight: '700',
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: COLORS.background,
+    },
+    keyboardView: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: SPACING.xl,
+    },
+    hero: {
+      alignItems: 'center',
+      marginBottom: SPACING.xxl,
+    },
+    title: {
+      ...TYPOGRAPHY.h1,
+      color: COLORS.text,
+      marginBottom: SPACING.xs,
+    },
+    subtitle: {
+      ...TYPOGRAPHY.body,
+      color: COLORS.mediumGray,
+      textAlign: 'center',
+    },
+    form: {
+      backgroundColor: COLORS.white,
+      padding: SPACING.xl,
+      borderRadius: BORDER_RADIUS.xl,
+      width: '100%',
+      maxWidth: 420,
+      ...SHADOWS.medium,
+    },
+    inputGroup: {
+      marginBottom: SPACING.lg,
+    },
+    label: {
+      ...TYPOGRAPHY.body,
+      fontWeight: '600',
+      color: COLORS.text,
+      marginBottom: SPACING.sm,
+    },
+    inputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: COLORS.inputBackground,
+      borderRadius: BORDER_RADIUS.md,
+      borderWidth: 1,
+      borderColor: COLORS.border,
+    },
+    inputIcon: {
+      marginHorizontal: SPACING.md,
+    },
+    input: {
+      flex: 1,
+      height: 50,
+      ...TYPOGRAPHY.body,
+      color: COLORS.text,
+    },
+    error: {
+      ...TYPOGRAPHY.small,
+      color: COLORS.error,
+      marginTop: SPACING.xs,
+    },
+    button: {
+      backgroundColor: COLORS.primary,
+      height: 50,
+      borderRadius: BORDER_RADIUS.md,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: SPACING.md,
+      ...SHADOWS.light,
+    },
+    buttonDisabled: {
+      opacity: 0.6,
+    },
+    buttonText: {
+      ...TYPOGRAPHY.body,
+      fontWeight: '700',
+      color: '#ffffff',
+    },
+    linkButton: {
+      marginTop: SPACING.lg,
+      alignItems: 'center',
+    },
+    linkText: {
+      ...TYPOGRAPHY.body,
+      color: COLORS.mediumGray,
+    },
+    linkTextBold: {
+      color: COLORS.primary,
+      fontWeight: '700',
+    },
+  });
 
 export default LoginScreen;

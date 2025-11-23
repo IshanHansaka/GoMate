@@ -15,16 +15,20 @@ import { useGetStationToStationInfoQuery } from '../../api/wmataApiSlice';
 import { STATION_NAMES } from '../../constants/StationNames';
 import {
   BORDER_RADIUS,
-  COLORS,
+  getColors,
   SHADOWS,
   SPACING,
   TYPOGRAPHY,
 } from '../../constants/Theme';
+import { useTheme } from '../../context/ThemeContext';
 import { StationToStationInfo } from '../../types/wmata';
 
 export default function JourneyScreen() {
   const params = useLocalSearchParams();
   const router = useRouter();
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
   const [fromStation, setFromStation] = useState<string | null>(null);
   const [toStation, setToStation] = useState<string | null>(null);
   const [isFromModalVisible, setFromModalVisible] = useState(false);
@@ -252,161 +256,164 @@ export default function JourneyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: COLORS.background,
-    padding: SPACING.xl,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-    marginTop: SPACING.xl,
-  },
-  backButton: {
-    marginRight: SPACING.lg,
-  },
-  title: {
-    ...TYPOGRAPHY.h2,
-    color: COLORS.text,
-  },
-  inputContainer: {
-    backgroundColor: COLORS.white,
-    padding: SPACING.xl,
-    borderRadius: BORDER_RADIUS.lg,
-    marginBottom: SPACING.xl,
-    ...SHADOWS.light,
-  },
-  label: {
-    ...TYPOGRAPHY.body,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: SPACING.sm,
-  },
-  selector: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: COLORS.lightGray,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    marginBottom: SPACING.lg,
-  },
-  selectorText: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.text,
-  },
-  searchButton: {
-    backgroundColor: COLORS.primary,
-    padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-    marginTop: SPACING.sm,
-  },
-  disabledButton: {
-    backgroundColor: COLORS.lightGray,
-  },
-  searchButtonText: {
-    color: COLORS.white,
-    ...TYPOGRAPHY.body,
-    fontWeight: 'bold',
-  },
-  center: {
-    alignItems: 'center',
-    marginTop: SPACING.xl,
-  },
-  loadingText: {
-    marginTop: SPACING.md,
-    color: COLORS.mediumGray,
-  },
-  errorText: {
-    color: COLORS.error,
-    ...TYPOGRAPHY.body,
-  },
-  resultCard: {
-    backgroundColor: COLORS.white,
-    padding: SPACING.xl,
-    borderRadius: BORDER_RADIUS.lg,
-    ...SHADOWS.medium,
-  },
-  resultTitle: {
-    ...TYPOGRAPHY.h3,
-    color: COLORS.text,
-    marginBottom: SPACING.lg,
-  },
-  resultRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: SPACING.lg,
-  },
-  resultTextContainer: {
-    marginLeft: SPACING.md,
-  },
-  resultLabel: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-  },
-  resultValue: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.text,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: COLORS.lightGray,
-    marginVertical: SPACING.lg,
-  },
-  fareTitle: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.text,
-    marginBottom: SPACING.md,
-  },
-  fareRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.sm,
-  },
-  fareLabel: {
-    ...TYPOGRAPHY.body,
-    fontWeight: '600',
-    color: COLORS.text,
-  },
-  fareValue: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.primary,
-  },
-  fareLabelSub: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-  },
-  fareValueSub: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-    paddingTop: 50,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: SPACING.xl,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
-  },
-  modalTitle: {
-    ...TYPOGRAPHY.h3,
-  },
-  stationItem: {
-    padding: SPACING.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
-  },
-  stationItemText: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.text,
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    container: {
+      flexGrow: 1,
+      backgroundColor: COLORS.background,
+      padding: SPACING.xl,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: SPACING.xl,
+      marginTop: SPACING.xl,
+    },
+    backButton: {
+      marginRight: SPACING.lg,
+    },
+    title: {
+      ...TYPOGRAPHY.h2,
+      color: COLORS.text,
+    },
+    inputContainer: {
+      backgroundColor: COLORS.white,
+      padding: SPACING.xl,
+      borderRadius: BORDER_RADIUS.lg,
+      marginBottom: SPACING.xl,
+      ...SHADOWS.light,
+    },
+    label: {
+      ...TYPOGRAPHY.body,
+      fontWeight: '600',
+      color: COLORS.text,
+      marginBottom: SPACING.sm,
+    },
+    selector: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: COLORS.lightGray,
+      padding: SPACING.md,
+      borderRadius: BORDER_RADIUS.md,
+      borderColor: COLORS.mediumGray,
+      marginBottom: SPACING.lg,
+    },
+    selectorText: {
+      ...TYPOGRAPHY.body,
+      color: COLORS.text,
+    },
+    searchButton: {
+      backgroundColor: COLORS.primary,
+      padding: SPACING.lg,
+      borderRadius: BORDER_RADIUS.md,
+      alignItems: 'center',
+      marginTop: SPACING.sm,
+    },
+    disabledButton: {
+      backgroundColor: COLORS.primary,
+    },
+    searchButtonText: {
+      color: '#ffffff',
+      ...TYPOGRAPHY.body,
+      fontWeight: 'bold',
+    },
+    center: {
+      alignItems: 'center',
+      marginTop: SPACING.xl,
+    },
+    loadingText: {
+      marginTop: SPACING.md,
+      color: COLORS.mediumGray,
+    },
+    errorText: {
+      color: COLORS.error,
+      ...TYPOGRAPHY.body,
+    },
+    resultCard: {
+      backgroundColor: COLORS.white,
+      padding: SPACING.xl,
+      borderRadius: BORDER_RADIUS.lg,
+      ...SHADOWS.medium,
+    },
+    resultTitle: {
+      ...TYPOGRAPHY.h3,
+      color: COLORS.text,
+      marginBottom: SPACING.lg,
+    },
+    resultRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: SPACING.lg,
+    },
+    resultTextContainer: {
+      marginLeft: SPACING.md,
+    },
+    resultLabel: {
+      ...TYPOGRAPHY.caption,
+      color: COLORS.mediumGray,
+    },
+    resultValue: {
+      ...TYPOGRAPHY.h4,
+      color: COLORS.text,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: COLORS.lightGray,
+      marginVertical: SPACING.lg,
+    },
+    fareTitle: {
+      ...TYPOGRAPHY.h4,
+      color: COLORS.text,
+      marginBottom: SPACING.md,
+    },
+    fareRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: SPACING.sm,
+    },
+    fareLabel: {
+      ...TYPOGRAPHY.body,
+      fontWeight: '600',
+      color: COLORS.text,
+    },
+    fareValue: {
+      ...TYPOGRAPHY.h4,
+      color: COLORS.primary,
+    },
+    fareLabelSub: {
+      ...TYPOGRAPHY.caption,
+      color: COLORS.mediumGray,
+    },
+    fareValueSub: {
+      ...TYPOGRAPHY.caption,
+      color: COLORS.mediumGray,
+    },
+    modalContainer: {
+      flex: 1,
+      backgroundColor: COLORS.white,
+      paddingTop: 50,
+    },
+    modalHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: SPACING.xl,
+      borderBottomWidth: 1,
+      borderBottomColor: COLORS.lightGray,
+    },
+    modalTitle: {
+      color: COLORS.text,
+      ...TYPOGRAPHY.h3,
+    },
+    stationItem: {
+      padding: SPACING.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: COLORS.lightGray,
+    },
+    stationItemText: {
+      ...TYPOGRAPHY.body,
+      color: COLORS.text,
+    },
+  });

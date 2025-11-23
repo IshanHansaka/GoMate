@@ -16,15 +16,19 @@ import StationListCard from '../../components/StationListCard';
 import { LINE_NAMES } from '../../constants/LineNames';
 import {
   BORDER_RADIUS,
-  COLORS,
+  getColors,
   SPACING,
   TYPOGRAPHY,
 } from '../../constants/Theme';
+import { useTheme } from '../../context/ThemeContext';
 import { StationInfo } from '../../types/wmata';
 import { getLineColor } from '../../utils/lineColors';
 
 export default function StationsScreen() {
   const router = useRouter();
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
   const [searchText, setSearchText] = useState('');
   const [selectedLine, setSelectedLine] = useState<string | null>(null);
 
@@ -67,6 +71,7 @@ export default function StationsScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder="Search stations..."
+          placeholderTextColor={COLORS.mediumGray}
           value={searchText}
           onChangeText={setSearchText}
         />
@@ -144,71 +149,74 @@ export default function StationsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  header: {
-    padding: SPACING.xl,
-    backgroundColor: COLORS.white,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
-  },
-  title: {
-    ...TYPOGRAPHY.h2,
-    marginBottom: SPACING.lg,
-    color: COLORS.text,
-  },
-  searchInput: {
-    backgroundColor: COLORS.lightGray,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    ...TYPOGRAPHY.body,
-    color: COLORS.text,
-  },
-  listContent: {
-    padding: SPACING.lg,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: SPACING.xl,
-  },
-  errorText: {
-    color: COLORS.error,
-    ...TYPOGRAPHY.body,
-  },
-  emptyText: {
-    color: COLORS.mediumGray,
-    ...TYPOGRAPHY.body,
-  },
-  filtersContainer: {
-    marginTop: SPACING.md,
-  },
-  filtersContent: {
-    paddingRight: SPACING.xl,
-  },
-  filterChip: {
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.sm,
-    borderRadius: BORDER_RADIUS.round,
-    backgroundColor: COLORS.lightGray,
-    marginRight: SPACING.sm,
-    borderWidth: 1,
-    borderColor: COLORS.lightGray,
-  },
-  filterChipActive: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
-  },
-  filterText: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-    fontWeight: '600',
-  },
-  filterTextActive: {
-    color: COLORS.white,
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: COLORS.background,
+    },
+    header: {
+      padding: SPACING.xl,
+      backgroundColor: COLORS.white,
+      borderBottomWidth: 1,
+      borderBottomColor: COLORS.lightGray,
+    },
+    title: {
+      ...TYPOGRAPHY.h2,
+      marginBottom: SPACING.lg,
+      color: COLORS.text,
+    },
+    searchInput: {
+      backgroundColor: COLORS.inputBackground,
+      borderWidth: 1,
+      borderColor: COLORS.border,
+      padding: SPACING.md,
+      borderRadius: BORDER_RADIUS.md,
+      ...TYPOGRAPHY.body,
+      color: COLORS.text,
+    },
+    listContent: {
+      padding: SPACING.lg,
+    },
+    center: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: SPACING.xl,
+    },
+    errorText: {
+      color: COLORS.error,
+      ...TYPOGRAPHY.body,
+    },
+    emptyText: {
+      color: COLORS.mediumGray,
+      ...TYPOGRAPHY.body,
+    },
+    filtersContainer: {
+      marginTop: SPACING.md,
+    },
+    filtersContent: {
+      paddingRight: SPACING.xl,
+    },
+    filterChip: {
+      paddingHorizontal: SPACING.lg,
+      paddingVertical: SPACING.sm,
+      borderRadius: BORDER_RADIUS.round,
+      backgroundColor: COLORS.lightGray,
+      marginRight: SPACING.sm,
+      borderWidth: 1,
+      borderColor: COLORS.lightGray,
+    },
+    filterChipActive: {
+      backgroundColor: COLORS.primary,
+      borderColor: COLORS.primary,
+    },
+    filterText: {
+      ...TYPOGRAPHY.caption,
+      color: COLORS.mediumGray,
+      fontWeight: '600',
+    },
+    filterTextActive: {
+      color: COLORS.white,
+    },
+  });

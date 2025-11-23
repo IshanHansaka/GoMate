@@ -22,11 +22,12 @@ import { getLineName } from '../../../constants/LineNames';
 import { getStationName } from '../../../constants/StationNames';
 import {
   BORDER_RADIUS,
-  COLORS,
   SHADOWS,
   SPACING,
   TYPOGRAPHY,
+  getColors,
 } from '../../../constants/Theme';
+import { useTheme } from '../../../context/ThemeContext';
 import {
   addFavourite,
   removeFavourite,
@@ -50,6 +51,10 @@ const DAYS = [
 ] as const;
 
 const StationScreen = () => {
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
+
   const { station_code } = useLocalSearchParams();
   const router = useRouter();
   const code = station_code as string;
@@ -214,7 +219,6 @@ const StationScreen = () => {
             style={styles.planTripButton}
             onPress={() => router.push(`/journey?fromStation=${code}`)}
           >
-            <Ionicons name="map-outline" size={20} color={COLORS.white} />
             <Text style={styles.planTripButtonText}>Plan Trip from Here</Text>
           </TouchableOpacity>
         </View>
@@ -275,7 +279,7 @@ const StationScreen = () => {
                   marginTop: 10,
                   paddingTop: 10,
                   borderTopWidth: 1,
-                  borderTopColor: '#eee',
+                  borderTopColor: COLORS.lightGray,
                 }}
               >
                 <Text style={[styles.cardTitle, { fontSize: 14 }]}>
@@ -350,18 +354,20 @@ const StationScreen = () => {
               justifyContent: 'space-between',
               alignItems: 'center',
               padding: 12,
-              backgroundColor: '#f0f0f0',
+              backgroundColor: COLORS.inputBackground,
               borderRadius: 8,
               borderWidth: 1,
-              borderColor: '#ddd',
+              borderColor: COLORS.border,
             }}
             onPress={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <Text style={{ fontSize: 16, color: '#333' }}>{selectedDay}</Text>
+            <Text style={{ fontSize: 16, color: COLORS.text }}>
+              {selectedDay}
+            </Text>
             <Ionicons
               name={isDropdownOpen ? 'chevron-up' : 'chevron-down'}
               size={20}
-              color="#666"
+              color={COLORS.mediumGray}
             />
           </TouchableOpacity>
 
@@ -372,10 +378,10 @@ const StationScreen = () => {
                 top: '100%',
                 left: 0,
                 right: 0,
-                backgroundColor: 'white',
+                backgroundColor: COLORS.white,
                 borderRadius: 8,
                 borderWidth: 1,
-                borderColor: '#ddd',
+                borderColor: COLORS.border,
                 marginTop: 4,
                 elevation: 5,
                 shadowColor: '#000',
@@ -391,8 +397,11 @@ const StationScreen = () => {
                   style={{
                     padding: 12,
                     borderBottomWidth: day === 'Sunday' ? 0 : 1,
-                    borderBottomColor: '#eee',
-                    backgroundColor: day === selectedDay ? '#e6f2ff' : 'white',
+                    borderBottomColor: COLORS.lightGray,
+                    backgroundColor:
+                      day === selectedDay
+                        ? COLORS.primary + '15'
+                        : COLORS.white,
                   }}
                   onPress={() => {
                     setSelectedDay(day);
@@ -402,7 +411,7 @@ const StationScreen = () => {
                   <Text
                     style={{
                       fontSize: 16,
-                      color: day === selectedDay ? '#007BFF' : '#333',
+                      color: day === selectedDay ? COLORS.primary : COLORS.text,
                       fontWeight: day === selectedDay ? 'bold' : 'normal',
                     }}
                   >
@@ -478,121 +487,123 @@ const getLineColor = (lineCode: string | null) => {
   }
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
-  content: { padding: SPACING.xl },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { marginTop: SPACING.md, color: COLORS.mediumGray },
-  errorText: { color: COLORS.error, ...TYPOGRAPHY.body },
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: COLORS.background },
+    content: { padding: SPACING.xl },
+    center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    loadingText: { marginTop: SPACING.md, color: COLORS.mediumGray },
+    errorText: { color: COLORS.error, ...TYPOGRAPHY.body },
 
-  section: {
-    marginBottom: SPACING.xxl,
-    backgroundColor: COLORS.white,
-    padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.lg,
-    ...SHADOWS.light,
-  },
-  title: { ...TYPOGRAPHY.h2, color: COLORS.text, marginBottom: SPACING.xs },
-  subtitle: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-    marginBottom: SPACING.md,
-  },
+    section: {
+      marginBottom: SPACING.xxl,
+      backgroundColor: COLORS.white,
+      padding: SPACING.lg,
+      borderRadius: BORDER_RADIUS.lg,
+      ...SHADOWS.light,
+    },
+    title: { ...TYPOGRAPHY.h2, color: COLORS.text, marginBottom: SPACING.xs },
+    subtitle: {
+      ...TYPOGRAPHY.caption,
+      color: COLORS.mediumGray,
+      marginBottom: SPACING.md,
+    },
 
-  linesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: SPACING.md,
-    gap: SPACING.sm,
-  },
-  planTripButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.xl,
-    borderRadius: BORDER_RADIUS.md,
-    marginTop: SPACING.lg,
-    gap: SPACING.sm,
-  },
-  planTripButtonText: {
-    color: COLORS.white,
-    ...TYPOGRAPHY.body,
-    fontWeight: '600',
-  },
-  lineBadge: {
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.xs,
-    borderRadius: BORDER_RADIUS.xl,
-  },
-  lineText: { ...TYPOGRAPHY.small, color: COLORS.white, fontWeight: 'bold' },
+    linesContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      marginTop: SPACING.md,
+      gap: SPACING.sm,
+    },
+    planTripButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: COLORS.primary,
+      paddingVertical: SPACING.md,
+      paddingHorizontal: SPACING.xl,
+      borderRadius: BORDER_RADIUS.md,
+      marginTop: SPACING.lg,
+      gap: SPACING.sm,
+    },
+    planTripButtonText: {
+      color: '#FFFFFF',
+      ...TYPOGRAPHY.body,
+      fontWeight: '600',
+    },
+    lineBadge: {
+      paddingHorizontal: SPACING.md,
+      paddingVertical: SPACING.xs,
+      borderRadius: BORDER_RADIUS.xl,
+    },
+    lineText: { ...TYPOGRAPHY.small, color: '#FFFFFF', fontWeight: 'bold' },
 
-  mapTitle: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.text,
-    paddingBottom: SPACING.sm,
-  },
-  mapContainer: {
-    height: 200,
-    borderRadius: BORDER_RADIUS.lg,
-    overflow: 'hidden',
-    backgroundColor: COLORS.lightGray,
-    position: 'relative',
-  },
-  map: { flex: 1 },
+    mapTitle: {
+      ...TYPOGRAPHY.h4,
+      color: COLORS.text,
+      paddingBottom: SPACING.sm,
+    },
+    mapContainer: {
+      height: 200,
+      overflow: 'hidden',
+      position: 'relative',
+    },
+    map: { flex: 1 },
 
-  sectionTitle: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.text,
-    marginBottom: SPACING.md,
-  },
-  card: {
-    backgroundColor: COLORS.lightGray,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    marginBottom: SPACING.md,
-  },
-  cardTitle: {
-    ...TYPOGRAPHY.body,
-    fontWeight: '600',
-    marginBottom: SPACING.sm,
-  },
-  note: {
-    ...TYPOGRAPHY.small,
-    color: COLORS.mediumGray,
-    marginBottom: SPACING.sm,
-    fontStyle: 'italic',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: SPACING.xs,
-  },
-  label: { color: COLORS.mediumGray },
-  value: { fontWeight: '500', color: COLORS.text },
-  emptyText: { color: COLORS.mediumGray, fontStyle: 'italic' },
+    sectionTitle: {
+      ...TYPOGRAPHY.h4,
+      color: COLORS.text,
+      marginBottom: SPACING.md,
+    },
+    card: {
+      backgroundColor: COLORS.inputBackground,
+      padding: SPACING.md,
+      borderRadius: BORDER_RADIUS.md,
+      marginBottom: SPACING.md,
+      borderWidth: 1,
+      borderColor: COLORS.border,
+    },
+    cardTitle: {
+      ...TYPOGRAPHY.body,
+      fontWeight: '600',
+      marginBottom: SPACING.sm,
+      color: COLORS.text,
+    },
+    note: {
+      ...TYPOGRAPHY.small,
+      color: COLORS.mediumGray,
+      marginBottom: SPACING.sm,
+      fontStyle: 'italic',
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: SPACING.xs,
+    },
+    label: { color: COLORS.mediumGray },
+    value: { fontWeight: '500', color: COLORS.text },
+    emptyText: { color: COLORS.mediumGray, fontStyle: 'italic' },
 
-  subHeader: {
-    ...TYPOGRAPHY.caption,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: SPACING.xs,
-  },
-  text: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.mediumGray,
-    marginBottom: SPACING.xs,
-  },
-  trainRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: SPACING.xs,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
-  },
-  trainTime: { fontWeight: 'bold', color: COLORS.text },
-  trainDest: { color: COLORS.mediumGray },
-});
+    subHeader: {
+      ...TYPOGRAPHY.caption,
+      fontWeight: '600',
+      color: COLORS.text,
+      marginBottom: SPACING.xs,
+    },
+    text: {
+      ...TYPOGRAPHY.caption,
+      color: COLORS.mediumGray,
+      marginBottom: SPACING.xs,
+    },
+    trainRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: SPACING.xs,
+      borderBottomWidth: 1,
+      borderBottomColor: COLORS.lightGray,
+    },
+    trainTime: { fontWeight: 'bold', color: COLORS.text },
+    trainDest: { color: COLORS.mediumGray },
+  });
 
 export default StationScreen;

@@ -16,24 +16,26 @@ import { useGetStationsQuery } from '../../api/wmataApiSlice';
 import StationCard from '../../components/StationCard';
 import {
   BORDER_RADIUS,
-  COLORS,
+  getColors,
   SHADOWS,
   SPACING,
   TYPOGRAPHY,
 } from '../../constants/Theme';
+import { useTheme } from '../../context/ThemeContext';
 import { selectCurrentUser } from '../../features/auth/authSlice';
 import { StationInfo } from '../../types/wmata';
 
 const HomeScreen = () => {
   const router = useRouter();
   const user = useSelector(selectCurrentUser);
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
   const { data, isLoading, error } = useGetStationsQuery({});
   const stations: StationInfo[] = (() => {
     const indices = [11, 45, 33, 31, 40];
     const list = data?.Stations ?? [];
-    return indices
-      .map((i) => list[i])
-      .filter((s): s is StationInfo => !!s);
+    return indices.map((i) => list[i]).filter((s): s is StationInfo => !!s);
   })();
 
   const shortcuts = [
@@ -142,99 +144,100 @@ const HomeScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  scrollContent: {
-    padding: SPACING.xl,
-    margin: 0,
-    flexGrow: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-  },
-  greeting: {
-    ...TYPOGRAPHY.h2,
-    color: COLORS.text,
-  },
-  subtitle: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.mediumGray,
-    marginTop: SPACING.xs,
-  },
-  profileButton: {
-    padding: SPACING.xs,
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.lg,
-    marginBottom: SPACING.xxl,
-    ...SHADOWS.light,
-  },
-  searchText: {
-    marginLeft: SPACING.sm,
-    color: COLORS.mediumGray,
-    ...TYPOGRAPHY.body,
-  },
-  sectionTitle: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.text,
-    marginBottom: SPACING.md,
-  },
-  shortcutsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: SPACING.xxl,
-  },
-  shortcutCard: {
-    width: '48%',
-    backgroundColor: COLORS.white,
-    padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.xl,
-    marginBottom: SPACING.lg,
-    alignItems: 'center',
-    ...SHADOWS.medium,
-  },
-  iconCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: SPACING.md,
-  },
-  shortcutTitle: {
-    ...TYPOGRAPHY.body,
-    fontWeight: '600',
-    color: COLORS.text,
-  },
-  stationsSection: {
-    marginBottom: SPACING.xl,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.md,
-  },
-  seeAllText: {
-    color: COLORS.primary,
-    ...TYPOGRAPHY.caption,
-    fontWeight: '600',
-  },
-  stationsList: {
-    paddingRight: SPACING.xl,
-    marginBottom: SPACING.md,
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: COLORS.background,
+    },
+    scrollContent: {
+      padding: SPACING.xl,
+      margin: 0,
+      flexGrow: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: SPACING.xl,
+    },
+    greeting: {
+      ...TYPOGRAPHY.h2,
+      color: COLORS.text,
+    },
+    subtitle: {
+      ...TYPOGRAPHY.body,
+      color: COLORS.mediumGray,
+      marginTop: SPACING.xs,
+    },
+    profileButton: {
+      padding: SPACING.xs,
+    },
+    searchBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: COLORS.white,
+      padding: SPACING.md,
+      borderRadius: BORDER_RADIUS.lg,
+      marginBottom: SPACING.xxl,
+      ...SHADOWS.light,
+    },
+    searchText: {
+      marginLeft: SPACING.sm,
+      color: COLORS.mediumGray,
+      ...TYPOGRAPHY.body,
+    },
+    sectionTitle: {
+      ...TYPOGRAPHY.h4,
+      color: COLORS.text,
+      marginBottom: SPACING.md,
+    },
+    shortcutsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      marginBottom: SPACING.xxl,
+    },
+    shortcutCard: {
+      width: '48%',
+      backgroundColor: COLORS.white,
+      padding: SPACING.lg,
+      borderRadius: BORDER_RADIUS.xl,
+      marginBottom: SPACING.lg,
+      alignItems: 'center',
+      ...SHADOWS.medium,
+    },
+    iconCircle: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: SPACING.md,
+    },
+    shortcutTitle: {
+      ...TYPOGRAPHY.body,
+      fontWeight: '600',
+      color: COLORS.text,
+    },
+    stationsSection: {
+      marginBottom: SPACING.xl,
+    },
+    sectionHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: SPACING.md,
+    },
+    seeAllText: {
+      color: COLORS.primary,
+      ...TYPOGRAPHY.caption,
+      fontWeight: '600',
+    },
+    stationsList: {
+      paddingRight: SPACING.xl,
+      marginBottom: SPACING.md,
+    },
+  });
 
 export default HomeScreen;

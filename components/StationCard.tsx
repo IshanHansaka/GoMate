@@ -4,11 +4,12 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   BORDER_RADIUS,
-  COLORS,
   SHADOWS,
   SPACING,
   TYPOGRAPHY,
+  getColors,
 } from '../constants/Theme';
+import { useTheme } from '../context/ThemeContext';
 import { StationInfo } from '../types/wmata';
 import { getLineColor } from '../utils/lineColors';
 
@@ -17,6 +18,9 @@ interface StationCardProps {
 }
 
 const StationCard: React.FC<StationCardProps> = ({ item }) => {
+  const { isDark } = useTheme();
+  const COLORS = getColors(isDark);
+  const styles = createStyles(COLORS);
   const router = useRouter();
 
   return (
@@ -57,49 +61,50 @@ const StationCard: React.FC<StationCardProps> = ({ item }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  stationCard: {
-    backgroundColor: COLORS.white,
-    width: 160,
-    padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.xl,
-    marginRight: SPACING.lg,
-    ...SHADOWS.medium,
-  },
-  stationHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: SPACING.md,
-  },
-  iconContainer: {
-    backgroundColor: COLORS.lightGray,
-    padding: SPACING.sm,
-    borderRadius: BORDER_RADIUS.md,
-    marginRight: SPACING.sm,
-  },
-  linesRow: {
-    flexDirection: 'row',
-    gap: SPACING.xs,
-    flexWrap: 'wrap',
-    maxWidth: 60,
-    justifyContent: 'flex-end',
-  },
-  lineDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  stationName: {
-    ...TYPOGRAPHY.body,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: SPACING.xs,
-  },
-  stationAddress: {
-    ...TYPOGRAPHY.small,
-    color: COLORS.mediumGray,
-  },
-});
+const createStyles = (COLORS: ReturnType<typeof getColors>) =>
+  StyleSheet.create({
+    stationCard: {
+      backgroundColor: COLORS.white,
+      width: 160,
+      padding: SPACING.lg,
+      borderRadius: BORDER_RADIUS.xl,
+      marginRight: SPACING.lg,
+      ...SHADOWS.medium,
+    },
+    stationHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: SPACING.md,
+    },
+    iconContainer: {
+      backgroundColor: COLORS.lightGray,
+      padding: SPACING.sm,
+      borderRadius: BORDER_RADIUS.md,
+      marginRight: SPACING.sm,
+    },
+    linesRow: {
+      flexDirection: 'row',
+      gap: SPACING.xs,
+      flexWrap: 'wrap',
+      maxWidth: 60,
+      justifyContent: 'flex-end',
+    },
+    lineDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+    },
+    stationName: {
+      ...TYPOGRAPHY.body,
+      fontWeight: 'bold',
+      color: COLORS.text,
+      marginBottom: SPACING.xs,
+    },
+    stationAddress: {
+      ...TYPOGRAPHY.small,
+      color: COLORS.mediumGray,
+    },
+  });
 
 export default StationCard;
