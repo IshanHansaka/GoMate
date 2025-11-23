@@ -1,9 +1,27 @@
+import { Feather } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as yup from 'yup';
+import {
+  BORDER_RADIUS,
+  COLORS,
+  SHADOWS,
+  SPACING,
+  TYPOGRAPHY,
+} from '../../constants/Theme';
 
 const schema = yup.object().shape({
   firstName: yup.string().required('First name is required'),
@@ -19,6 +37,7 @@ const schema = yup.object().shape({
 });
 
 const RegisterScreen = () => {
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -34,7 +53,7 @@ const RegisterScreen = () => {
   });
 
   // 3. Create a submit handler
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     console.log('Register Data:', data);
     // TODO:
     // 1. Call the dummyjson API
@@ -44,82 +63,162 @@ const RegisterScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.form}>
-        <Text style={styles.label}>First Name</Text>
-        <Controller
-          control={control}
-          name="firstName"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-        />
-        {errors.firstName && (
-          <Text style={styles.error}>{errors.firstName.message}</Text>
-        )}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Hero Section */}
+          <View style={styles.hero}>
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>
+              Sign up to get started with GoMate
+            </Text>
+          </View>
 
-        <Text style={styles.label}>Last Name</Text>
-        <Controller
-          control={control}
-          name="lastName"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-        />
-        {errors.lastName && (
-          <Text style={styles.error}>{errors.lastName.message}</Text>
-        )}
+          {/* Form */}
+          <View style={styles.form}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>First Name</Text>
+              <Controller
+                control={control}
+                name="firstName"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputWrapper}>
+                    <Feather
+                      name="user"
+                      size={20}
+                      color={COLORS.mediumGray}
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Enter your first name"
+                      placeholderTextColor={COLORS.mediumGray}
+                    />
+                  </View>
+                )}
+              />
+              {errors.firstName && (
+                <Text style={styles.error}>{errors.firstName.message}</Text>
+              )}
+            </View>
 
-        <Text style={styles.label}>Email</Text>
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          )}
-        />
-        {errors.email && (
-          <Text style={styles.error}>{errors.email.message}</Text>
-        )}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Last Name</Text>
+              <Controller
+                control={control}
+                name="lastName"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputWrapper}>
+                    <Feather
+                      name="user"
+                      size={20}
+                      color={COLORS.mediumGray}
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Enter your last name"
+                      placeholderTextColor={COLORS.mediumGray}
+                    />
+                  </View>
+                )}
+              />
+              {errors.lastName && (
+                <Text style={styles.error}>{errors.lastName.message}</Text>
+              )}
+            </View>
 
-        <Text style={styles.label}>Password</Text>
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              secureTextEntry
-            />
-          )}
-        />
-        {errors.password && (
-          <Text style={styles.error}>{errors.password.message}</Text>
-        )}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Email</Text>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputWrapper}>
+                    <Feather
+                      name="mail"
+                      size={20}
+                      color={COLORS.mediumGray}
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Enter your email"
+                      placeholderTextColor={COLORS.mediumGray}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                    />
+                  </View>
+                )}
+              />
+              {errors.email && (
+                <Text style={styles.error}>{errors.email.message}</Text>
+              )}
+            </View>
 
-        <Button title="Register" onPress={handleSubmit(onSubmit)} />
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Password</Text>
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputWrapper}>
+                    <Feather
+                      name="lock"
+                      size={20}
+                      color={COLORS.mediumGray}
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Enter your password"
+                      placeholderTextColor={COLORS.mediumGray}
+                      secureTextEntry
+                    />
+                  </View>
+                )}
+              />
+              {errors.password && (
+                <Text style={styles.error}>{errors.password.message}</Text>
+              )}
+            </View>
 
-        {/* TODO: Add a "Go to Login" button */}
-      </View>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSubmit(onSubmit)}
+            >
+              <Text style={styles.buttonText}>Create Account</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.linkButton}
+              onPress={() => router.push('/(auth)/login')}
+            >
+              <Text style={styles.linkText}>
+                Already have an account?{' '}
+                <Text style={styles.linkTextBold}>Sign In</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -127,30 +226,106 @@ const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
-    padding: 16,
+    alignItems: 'center',
+    padding: SPACING.xl,
+  },
+  hero: {
+    alignItems: 'center',
+    marginBottom: SPACING.xxl,
+  },
+  iconContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: COLORS.primary + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: SPACING.lg,
+    ...SHADOWS.medium,
+  },
+  title: {
+    ...TYPOGRAPHY.h1,
+    color: COLORS.text,
+    marginBottom: SPACING.xs,
+  },
+  subtitle: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.mediumGray,
+    textAlign: 'center',
   },
   form: {
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    backgroundColor: COLORS.white,
+    padding: SPACING.xl,
+    borderRadius: BORDER_RADIUS.xl,
+    width: '100%',
+    maxWidth: 420,
+    ...SHADOWS.medium,
+  },
+  inputGroup: {
+    marginBottom: SPACING.lg,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 8,
+    ...TYPOGRAPHY.body,
+    fontWeight: '600',
+    color: COLORS.text,
+    marginBottom: SPACING.sm,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.lightGray,
+    borderRadius: BORDER_RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.lightGray,
+  },
+  inputIcon: {
+    marginLeft: SPACING.md,
   },
   input: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    marginBottom: 12,
+    flex: 1,
+    height: 50,
+    paddingHorizontal: SPACING.md,
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
   },
   error: {
-    color: 'red',
-    marginBottom: 10,
+    ...TYPOGRAPHY.small,
+    color: COLORS.error,
+    marginTop: SPACING.xs,
+  },
+  button: {
+    backgroundColor: COLORS.primary,
+    height: 50,
+    borderRadius: BORDER_RADIUS.md,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: SPACING.md,
+    ...SHADOWS.light,
+  },
+  buttonText: {
+    ...TYPOGRAPHY.body,
+    fontWeight: '700',
+    color: COLORS.white,
+  },
+  linkButton: {
+    marginTop: SPACING.lg,
+    alignItems: 'center',
+  },
+  linkText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.mediumGray,
+  },
+  linkTextBold: {
+    color: COLORS.primary,
+    fontWeight: '700',
   },
 });
 

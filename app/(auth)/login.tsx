@@ -1,14 +1,33 @@
 import { ApiError } from '@/types/api';
 import { LoginFormData } from '@/types/auth';
+import { Feather } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { useLoginMutation } from '../../api/apiSlice';
+import {
+  BORDER_RADIUS,
+  COLORS,
+  SHADOWS,
+  SPACING,
+  TYPOGRAPHY,
+} from '../../constants/Theme';
 import { setCredentials } from '../../features/auth/authSlice';
 
 const schema = yup.object().shape({
@@ -32,6 +51,8 @@ const LoginScreen = () => {
       password: 'emilyspass',
     },
   });
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   // 5. Setup the hooks
   const dispatch = useDispatch();
@@ -69,55 +90,121 @@ const LoginScreen = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.form}>
-        <Text style={styles.label}>Username</Text>
-        <Controller
-          control={control}
-          name="username"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              keyboardType="default"
-              autoCapitalize="none"
-            />
-          )}
-        />
-        {errors.username && (
-          <Text style={styles.error}>{errors.username.message}</Text>
-        )}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Hero Section */}
+          <View style={styles.hero}>
+            <Text style={styles.title}>Welcome Back!</Text>
+            <Text style={styles.subtitle}>Sign in to continue to GoMate</Text>
+          </View>
 
-        <Text style={styles.label}>Password</Text>
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              secureTextEntry
-            />
-          )}
-        />
-        {errors.password && (
-          <Text style={styles.error}>{errors.password.message}</Text>
-        )}
+          {/* Form */}
+          <View style={styles.form}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Username</Text>
+              <Controller
+                control={control}
+                name="username"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputWrapper}>
+                    <Feather
+                      name="user"
+                      size={20}
+                      color={COLORS.mediumGray}
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Enter your username"
+                      placeholderTextColor={COLORS.mediumGray}
+                      keyboardType="default"
+                      autoCapitalize="none"
+                    />
+                  </View>
+                )}
+              />
+              {errors.username && (
+                <Text style={styles.error}>{errors.username.message}</Text>
+              )}
+            </View>
 
-        {/* 7. Disable button while loading */}
-        <Button
-          title={isLoading ? 'Logging in...' : 'Login'}
-          onPress={handleSubmit(onSubmit)}
-          disabled={isLoading}
-        />
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Password</Text>
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputWrapper}>
+                    <Feather
+                      name="lock"
+                      size={20}
+                      color={COLORS.mediumGray}
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Enter your password"
+                      placeholderTextColor={COLORS.mediumGray}
+                      secureTextEntry={!passwordVisible}
+                    />
+                    <TouchableOpacity onPress={togglePasswordVisibility}>
+                      <Feather
+                        name={passwordVisible ? 'eye-off' : 'eye'}
+                        size={20}
+                        color={COLORS.mediumGray}
+                        style={styles.inputIcon}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+              {errors.password && (
+                <Text style={styles.error}>{errors.password.message}</Text>
+              )}
+            </View>
 
-        {/* TODO: Add a "Go to Register" button */}
-      </View>
+            <TouchableOpacity
+              style={[styles.button, isLoading && styles.buttonDisabled]}
+              onPress={handleSubmit(onSubmit)}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color={COLORS.white} />
+              ) : (
+                <Text style={styles.buttonText}>Login</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.linkButton}
+              onPress={() => router.push('/(auth)/register')}
+            >
+              <Text style={styles.linkText}>
+                Don't have an account?{' '}
+                <Text style={styles.linkTextBold}>Sign Up</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -125,30 +212,108 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
-    padding: 16,
+    alignItems: 'center',
+    padding: SPACING.xl,
+  },
+  hero: {
+    alignItems: 'center',
+    marginBottom: SPACING.xxl,
+  },
+  iconContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: COLORS.primary + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: SPACING.lg,
+    ...SHADOWS.medium,
+  },
+  title: {
+    ...TYPOGRAPHY.h1,
+    color: COLORS.text,
+    marginBottom: SPACING.xs,
+  },
+  subtitle: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.mediumGray,
+    textAlign: 'center',
   },
   form: {
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    backgroundColor: COLORS.white,
+    padding: SPACING.xl,
+    borderRadius: BORDER_RADIUS.xl,
+    width: '100%',
+    maxWidth: 420,
+    ...SHADOWS.medium,
+  },
+  inputGroup: {
+    marginBottom: SPACING.lg,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 8,
+    ...TYPOGRAPHY.body,
+    fontWeight: '600',
+    color: COLORS.text,
+    marginBottom: SPACING.sm,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.lightGray,
+    borderRadius: BORDER_RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.lightGray,
+  },
+  inputIcon: {
+    marginHorizontal: SPACING.md,
   },
   input: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    marginBottom: 12,
+    flex: 1,
+    height: 50,
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
   },
   error: {
-    color: 'red',
-    marginBottom: 10,
+    ...TYPOGRAPHY.small,
+    color: COLORS.error,
+    marginTop: SPACING.xs,
+  },
+  button: {
+    backgroundColor: COLORS.primary,
+    height: 50,
+    borderRadius: BORDER_RADIUS.md,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: SPACING.md,
+    ...SHADOWS.light,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonText: {
+    ...TYPOGRAPHY.body,
+    fontWeight: '700',
+    color: COLORS.white,
+  },
+  linkButton: {
+    marginTop: SPACING.lg,
+    alignItems: 'center',
+  },
+  linkText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.mediumGray,
+  },
+  linkTextBold: {
+    color: COLORS.primary,
+    fontWeight: '700',
   },
 });
 
