@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -62,19 +62,19 @@ const ProfileScreen = () => {
 
       <View style={styles.infoSection}>
         <View style={styles.infoRow}>
-          <Ionicons name="mail-outline" size={20} color={COLORS.mediumGray} />
+          <Feather name="mail" size={20} color={COLORS.mediumGray} />
           <Text style={styles.infoText}>{user?.email}</Text>
         </View>
         {user?.phone && (
           <View style={styles.infoRow}>
-            <Ionicons name="call-outline" size={20} color={COLORS.mediumGray} />
+            <Feather name="phone" size={20} color={COLORS.mediumGray} />
             <Text style={styles.infoText}>{user.phone}</Text>
           </View>
         )}
         {user?.address && (
           <View style={styles.infoRow}>
-            <Ionicons
-              name="location-outline"
+            <Feather
+              name="map-pin"
               size={20}
               color={COLORS.mediumGray}
             />
@@ -90,7 +90,7 @@ const ProfileScreen = () => {
       </View>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Ionicons name="log-out-outline" size={20} color="white" />
+        <Feather name="log-out" size={20} color="white" />
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
 

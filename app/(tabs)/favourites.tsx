@@ -17,7 +17,8 @@ import { StationInfo } from '../../types/wmata';
 export default function FavouritesScreen() {
   const router = useRouter();
   const favouriteCodes = useSelector(
-    (state: RootState) => state.favourites.stationCodes
+    (state: RootState & { favourites: { stationCodes: string[] } }) =>
+      state.favourites.stationCodes
   );
   const { data, isLoading, error } = useGetStationsQuery({});
 
