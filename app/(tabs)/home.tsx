@@ -28,7 +28,13 @@ const HomeScreen = () => {
   const router = useRouter();
   const user = useSelector(selectCurrentUser);
   const { data, isLoading, error } = useGetStationsQuery({});
-  const stations: StationInfo[] = data?.Stations?.slice(0, 5) || [];
+  const stations: StationInfo[] = (() => {
+    const indices = [11, 45, 33, 31, 40];
+    const list = data?.Stations ?? [];
+    return indices
+      .map((i) => list[i])
+      .filter((s): s is StationInfo => !!s);
+  })();
 
   const shortcuts = [
     {
