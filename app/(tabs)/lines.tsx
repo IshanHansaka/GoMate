@@ -17,31 +17,13 @@ import {
   TYPOGRAPHY,
 } from '../../constants/Theme';
 import { Line } from '../../types/wmata';
+import { getLineColor } from '../../utils/lineColors';
 
 export default function LinesScreen() {
   const { data, isLoading, error } = useGetLinesQuery({});
   const [isModalVisible, setModalVisible] = useState(false);
 
   const lines: Line[] = data?.Lines || [];
-
-  const getLineColor = (lineCode: string) => {
-    switch (lineCode) {
-      case 'RD':
-        return '#D11241'; // Red
-      case 'BL':
-        return '#0072CE'; // Blue
-      case 'OR':
-        return '#D47600'; // Orange
-      case 'YL':
-        return '#FFD200'; // Yellow
-      case 'GR':
-        return '#00B140'; // Green
-      case 'SV':
-        return '#A0A2A0'; // Silver
-      default:
-        return '#333';
-    }
-  };
 
   if (isLoading) {
     return (

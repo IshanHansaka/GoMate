@@ -1,87 +1,156 @@
-import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import {
-  BORDER_RADIUS,
-  COLORS,
-  SHADOWS,
-  SPACING,
-  TYPOGRAPHY,
-} from '../constants/Theme';
+import { Linking, StyleSheet, Text, View } from 'react-native';
+import { LINE_NAMES } from '../constants/LineNames';
 import { RailIncident } from '../types/wmata';
 import { getLineColor } from '../utils/lineColors';
 
 interface IncidentCardProps {
-  item: RailIncident;
+  incident: RailIncident;
 }
 
-const IncidentCard: React.FC<IncidentCardProps> = ({ item }) => {
-  const router = useRouter();
-  const lines = item.LinesAffected.split(/;[\s]?/).filter((l) => l);
+const IncidentCard: React.FC<IncidentCardProps> = ({ incident }) => {
+  const getDisplayName = (code: string) => {
+    if (LINE_NAMES[code]) {
+      return LINE_NAMES[code];
+    }
+    return code
+      .toLowerCase()
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  const lines = incident.LinesAffected.split(/;[\s]?/).filter(
+    (fn) => fn !== ''
+  );
 
   return (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => router.push('/(tabs)/incidents')}
-    >
-      <View style={styles.linesRow}>
-        {lines.slice(0, 4).map((line, idx) => (
-          <View
-            key={idx}
-            style={[
-              styles.lineDot,
-              { backgroundColor: getLineColor(line, '#666') },
-            ]}
-          />
-        ))}
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <View style={styles.linesContainer}>
+          {lines.length > 0 ? (
+            lines.map((line, index) => (
+              <View
+                key={`${line}-${index}`}
+                style={[
+                  styles.lineBadge,
+                  { backgroundColor: getLineColor(line, '#666') },
+                ]}
+              >
+                <Text style={styles.lineText}>{getDisplayName(line)}</Text>
+              </View>
+            ))
+          ) : (
+            <View style={[styles.lineBadge, { backgroundColor: '#666' }]}>
+              <Text style={styles.lineText}>System</Text>
+            </View>
+          )}
+        </View>
+        <View style={styles.typeBadge}>
+          <Text style={styles.typeText}>{incident.IncidentType}</Text>
+        </View>
       </View>
-      <Text style={styles.type} numberOfLines={1}>
-        {item.IncidentType}
+
+      <Text style={styles.description}>
+        {incident.Description.split(/(https?:\/\/[^\s]+)/g).map(
+          (part, index) => {
+            if (part.match(/https?:\/\/[^\s]+/)) {
+              return null; // Skip rendering links inline
+            }
+            return part;
+          }
+        )}
       </Text>
-      <Text style={styles.desc} numberOfLines={2}>
-        {item.Description.replace(/https?:\/\/[^\s]+/g, '')}
-      </Text>
-      <Text style={styles.time} numberOfLines={1}>
-        {new Date(item.DateUpdated).toLocaleTimeString()}
-      </Text>
-    </TouchableOpacity>
+
+      {incident.Description.match(/https?:\/\/[^\s]+/g)?.map((link, index) => (
+        <Text
+          key={`link-${index}`}
+          style={styles.link}
+          onPress={() => Linking.openURL(link)}
+        >
+          {link}
+        </Text>
+      ))}
+
+      <View style={styles.footer}>
+        <Ionicons name="time-outline" size={14} color="#666" />
+        <Text style={styles.dateText}>
+          Updated: {new Date(incident.DateUpdated).toLocaleString()}
+        </Text>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: COLORS.white,
-    width: 180,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.lg,
-    marginRight: SPACING.md,
-    ...SHADOWS.light,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  linesRow: {
+  cardHeader: {
     flexDirection: 'row',
-    gap: SPACING.xs,
-    marginBottom: SPACING.sm,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
   },
-  lineDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+  linesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    flex: 1,
   },
-  type: {
-    ...TYPOGRAPHY.caption,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginBottom: SPACING.xs,
+  lineBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
   },
-  desc: {
-    ...TYPOGRAPHY.small,
-    color: COLORS.mediumGray,
-    marginBottom: SPACING.xs,
+  lineText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
   },
-  time: {
-    ...TYPOGRAPHY.caption,
-    fontSize: 10,
-    color: COLORS.mediumGray,
+  typeBadge: {
+    backgroundColor: '#FFF3CD',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#FFEEBA',
+  },
+  typeText: {
+    color: '#856404',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  description: {
+    fontSize: 16,
+    color: '#333',
+    lineHeight: 22,
+    marginBottom: 12,
+  },
+  link: {
+    color: '#007AFF',
+    textDecorationLine: 'underline',
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    paddingTop: 12,
+  },
+  dateText: {
+    fontSize: 12,
+    color: '#666',
+    marginLeft: 6,
   },
 });
 
