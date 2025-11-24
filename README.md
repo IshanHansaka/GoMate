@@ -103,7 +103,7 @@ Create a `.env` file in the project root:
 
 ```env
 # Sign up at https://developer.wmata.com for a key
-EXPO_PUBLIC_WMATA_API_KEY=your_wmata_primary_key_here
+EXPO_PUBLIC_WMATA_API_PRIMARY_KEY=your_wmata_primary_key_here
 ```
 
 ### 4. Run the App
