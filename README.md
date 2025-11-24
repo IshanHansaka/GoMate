@@ -1,4 +1,6 @@
-<h1 align="center">🚇 GoMate – DC Metro Transit Companion</h1>
+# GoMate – DC Metro Transit Companion
+
+> **Android APK:** [Download latest build](https://expo.dev/accounts/ishanhansakasilva/projects/GoMate/builds/9b01baaf-4afa-49fb-9596-50ca5ce5dc7b)
 
 **GoMate** is a cross‑platform mobile app (Expo + React Native + TypeScript) that helps Washington D.C. Metrorail riders search stations, plan trips, view live train predictions, and save favourites – all with a fast, theme‑aware UI and robust state management.
 
