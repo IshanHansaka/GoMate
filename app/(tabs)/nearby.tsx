@@ -72,7 +72,7 @@ export default function NearbyScreen() {
           : location?.coords.longitude || 0,
         radius: parseFloat(radius) * 1000, // Convert km to meters
       });
-      setTimeout(() => setIsSearching(false), 1000); // Simulate a delay for better UX
+      setTimeout(() => setIsSearching(false), 1000);
     }
   };
 
@@ -123,7 +123,6 @@ export default function NearbyScreen() {
           onPress={() => {
             setErrorMsg(null);
             setLocation(null);
-            // Show loading spinner and message
             setTimeout(() => {
               (async () => {
                 try {
@@ -142,7 +141,7 @@ export default function NearbyScreen() {
                   );
                 }
               })();
-            }, 500); // Simulate a short delay for better UX
+            }, 500);
           }}
         >
           <Text style={styles.retryText}>Retry</Text>

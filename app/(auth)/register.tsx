@@ -63,7 +63,7 @@ const RegisterScreen = () => {
     setIsSubmitting(true);
     try {
       console.log('Register Data:', data);
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       router.push('/(auth)/login');
     } catch (error) {
       console.error('Registration failed:', error);

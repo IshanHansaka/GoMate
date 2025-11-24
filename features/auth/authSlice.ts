@@ -13,9 +13,7 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  // "Reducers" are functions that update the state
   reducers: {
-    // This action will be "dispatched" when the user logs in
     setCredentials: (
       state,
       action: PayloadAction<{

@@ -13,7 +13,7 @@ import 'react-native-reanimated';
 import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import LoadingScreen from '@/components/LoadingScreen'; // optional spinner component
+import LoadingScreen from '@/components/LoadingScreen';
 import {
   ThemeProvider as AppThemeProvider,
   useTheme,
@@ -21,27 +21,23 @@ import {
 import { selectIsAuthenticated } from '../features/auth/authSlice';
 import { persistor, store } from '../store/store';
 
-// Prevent splash screen auto-hide
 SplashScreen.preventAutoHideAsync();
 
-// Main entry point
 export default function RootLayout() {
   const [fontsLoaded, fontsError] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
 
-  // Handle font loading errors
   useEffect(() => {
     if (fontsError) throw fontsError;
   }, [fontsError]);
 
-  // Hide splash screen when fonts loaded
   useEffect(() => {
     if (fontsLoaded) SplashScreen.hideAsync();
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) return <LoadingScreen />; // show a loader instead of blank
+  if (!fontsLoaded) return <LoadingScreen />;
 
   return (
     <Provider store={store}>
@@ -54,14 +50,12 @@ export default function RootLayout() {
   );
 }
 
-// Component inside Redux Provider
 function RootLayoutNav() {
   const { isDark } = useTheme();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const segments = useSegments();
   const router = useRouter();
 
-  // Redirect based on auth state
   useAuthRedirect(isAuthenticated, segments, router);
 
   return (

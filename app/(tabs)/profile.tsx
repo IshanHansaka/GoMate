@@ -35,15 +35,12 @@ const ProfileScreen = () => {
   const styles = createStyles(COLORS);
 
   const router = useRouter();
-  // Favourites moved to its own tab; remove related station fetching logic
 
   const handleLogout = () => {
     resetTheme();
     dispatch(logout());
     dispatch(apiSlice.util.resetApiState());
   };
-
-  // Navigations kept minimal on profile now
 
   const renderHeader = () => (
     <View style={styles.header}>
@@ -108,8 +105,6 @@ const ProfileScreen = () => {
         <Feather name="log-out" size={20} color="white" />
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
-
-      {/* Favourites section removed; now lives in dedicated tab */}
     </View>
   );
   return (

@@ -3,18 +3,12 @@ import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
-// You can explore the built-in useColorScheme hook
-// import { useColorScheme } from '@/components/useColorScheme';
-
 export default function TabLayout() {
-  // const colorScheme = useColorScheme();
   const router = useRouter();
 
   return (
     <Tabs
       screenOptions={{
-        // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // You can uncomment the line above to use your theme colors
         headerShown: true,
         headerTitle: 'GoMate',
         headerRight: () => (

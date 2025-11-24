@@ -19,7 +19,6 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-// Enhanced baseQuery with automatic token refresh
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -28,7 +27,6 @@ const baseQueryWithReauth: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
-    // Token expired — attempt refresh
     const refreshToken = (api.getState() as RootState).auth.tokens
       ?.refreshToken;
     if (!refreshToken) {
@@ -51,7 +49,6 @@ const baseQueryWithReauth: BaseQueryFn<
       api.dispatch(
         setCredentials({ user, tokens: refreshResult.data as AuthTokens })
       );
-      // Retry original query
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logout());
@@ -82,7 +79,6 @@ export const apiSlice = createApi({
         }
       },
     }),
-    // ...other endpoints
   }),
 });
 

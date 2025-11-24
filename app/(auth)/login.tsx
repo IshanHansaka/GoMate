@@ -50,7 +50,6 @@ const LoginScreen = () => {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: yupResolver(schema),
-    // For easy testing with dummyjson
     defaultValues: {
       username: 'emilys',
       password: 'emilyspass',
@@ -59,17 +58,14 @@ const LoginScreen = () => {
 
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  // 5. Setup the hooks
   const dispatch = useDispatch();
   const router = useRouter();
-  const [login, { isLoading }] = useLoginMutation(); // Hook gives us a trigger and loading state
+  const [login, { isLoading }] = useLoginMutation();
 
-  // 6. Update the submit handler
   const onSubmit = async (data: LoginFormData) => {
     try {
       const userData = await login(data).unwrap();
 
-      // Update Redux
       dispatch(
         setCredentials({
           user: {

@@ -62,7 +62,7 @@ const IncidentCard: React.FC<IncidentCardProps> = ({ incident }) => {
         {incident.Description.split(/(https?:\/\/[^\s]+)/g).map(
           (part, index) => {
             if (part.match(/https?:\/\/[^\s]+/)) {
-              return null; // Skip rendering links inline
+              return null;
             }
             return part;
           }

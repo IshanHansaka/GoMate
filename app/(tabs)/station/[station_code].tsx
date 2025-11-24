@@ -102,9 +102,6 @@ const StationScreen = () => {
     error: predictionsError,
     refetch: refetchPredictions,
   } = useGetStationPredictionsQuery(code);
-  // {
-  //   pollingInterval: 30000, // Refresh every 30 seconds
-  // }
 
   const isLoading =
     isInfoLoading || isParkingLoading || isTimesLoading || isPredictionsLoading;
